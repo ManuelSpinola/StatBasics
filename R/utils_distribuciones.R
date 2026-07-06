@@ -17,11 +17,20 @@ etiquetas_distribuciones <- c(
   nbinom  = "Binomial Negativa"
 )
 
-# ── ¿Es una variable de conteos? ─────────────────────────────
-# Entera y no negativa (0, 1, 2, ...). Si es TRUE, se compara
-# contra Poisson y Binomial Negativa en vez de las continuas.
+# ── ¿Es una variable de conteos? (heurística, solo sugerencia) ──
+# Entera y no negativa (0, 1, 2, ...). Se usa SOLO para sugerir
+# un valor inicial en el radioButtons de tipo de variable — el
+# usuario siempre puede cambiarlo, porque muchas variables
+# continuas (ej. peso en gramos) también son enteras.
 es_discreta_conteo <- function(x) {
   all(x >= 0) && all(abs(x - round(x)) < 1e-8)
+}
+
+# Sugerencia: solo se propone "conteo" si además hay pocos
+# valores distintos en relación al total (patrón típico de
+# conteos reales, no de una medida continua redondeada).
+sugerir_tipo_variable <- function(x) {
+  if (es_discreta_conteo(x) && length(unique(x)) <= 30) "conteo" else "continua"
 }
 
 # ── Resumen de dispersión para datos de conteo ──────────────
@@ -42,8 +51,8 @@ resumen_dispersion_conteo <- function(x) {
 # todos los valores de x son > 0. Beta requiere que TODOS los
 # valores est\u00e9n estrictamente entre 0 y 1 (la distribuci\u00f3n
 # Beta no est\u00e1 definida en los extremos 0 y 1 exactos).
-candidatas_disponibles <- function(x) {
-  if (es_discreta_conteo(x)) {
+candidatas_disponibles <- function(x, tipo = "continua") {
+  if (tipo == "conteo") {
     return(c("pois", "nbinom"))
   }
   base <- c("norm", "unif")
@@ -55,8 +64,24 @@ candidatas_disponibles <- function(x) {
 # ── Ajustar varias distribuciones candidatas por MLE ────────
 # Devuelve una lista nombrada de objetos fitdist (fitdistrplus),
 # omitiendo silenciosamente las que fallen al converger.
+#
+# Nota t\u00e9cnica: cuando optim() no converge, fitdistrplus imprime
+# el error directo a consola (via print()/cat(), no via warning()
+# o message()), as\u00ed que suppressWarnings()/suppressMessages() no
+# lo silencian. Se usa sink() para redirigir toda la salida de
+# consola (stdout y stderr) mientras se ajustan las candidatas.
 ajustar_candidatas <- function(x, candidatas) {
   fits <- list()
+  con <- textConnection("descartado_ajustar_candidatas", open = "w",
+                        local = TRUE)
+  sink(con)
+  sink(con, type = "message")
+  on.exit({
+    sink(type = "message")
+    sink()
+    close(con)
+  }, add = TRUE)
+
   for (d in candidatas) {
     ajuste <- tryCatch(
       fitdistrplus::fitdist(x, d),

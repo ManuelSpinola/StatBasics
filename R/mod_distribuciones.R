@@ -60,52 +60,107 @@ mod_distribuciones_ui <- function(id) {
               class = "table table-sm table-bordered small mb-4",
               style = "background: #ffffff;",
               tags$thead(
-                style = paste0("background:", colores$primario,
-                               "; color: #ffffff;"),
                 tags$tr(
-                  tags$th("Distribuci\u00f3n"), tags$th("Tipo"),
-                  tags$th("Par\u00e1metros"), tags$th("Cu\u00e1ndo se usa")
+                  style = paste0("background:", colores$primario,
+                                "; color: #ffffff;"),
+                  tags$th("Distribuci\u00f3n",
+                         style = paste0("background:", colores$primario,
+                                       "; color: #ffffff;")),
+                  tags$th("Par\u00e1metros",
+                         style = paste0("background:", colores$primario,
+                                       "; color: #ffffff;")),
+                  tags$th("Cu\u00e1ndo se usa",
+                         style = paste0("background:", colores$primario,
+                                       "; color: #ffffff;"))
                 )
               ),
               tags$tbody(
                 tags$tr(
+                  tags$td(colspan = "3",
+                         style = paste0("background:", colores$secundario,
+                                       "; color: #ffffff; font-weight:700;"),
+                         "Continuas")
+                ),
+                tags$tr(
                   tags$td(strong("Normal")),
-                  tags$td("Continua"),
                   tags$td("Media (\u03bc), desv. est\u00e1ndar (\u03c3)"),
                   tags$td("Muchos fen\u00f3menos naturales; base de la ",
                           "inferencia cl\u00e1sica")
                 ),
                 tags$tr(
                   style = paste0("background:", colores$fondo),
-                  tags$td(strong("Binomial")),
-                  tags$td("Discreta"),
-                  tags$td("n ensayos, p probabilidad de \u00e9xito"),
-                  tags$td("Conteo de \u00e9xitos en n ensayos independientes ",
-                          "(s\u00ed/no)")
-                ),
-                tags$tr(
-                  tags$td(strong("Poisson")),
-                  tags$td("Discreta"),
-                  tags$td("\u03bb (tasa promedio de ocurrencia)"),
-                  tags$td("Conteos raros en un intervalo de tiempo/espacio")
-                ),
-                tags$tr(
-                  style = paste0("background:", colores$fondo),
                   tags$td(strong("t de Student")),
-                  tags$td("Continua"),
                   tags$td("Grados de libertad (df)"),
                   tags$td("Como la normal, pero con colas m\u00e1s pesadas ",
                           "\u2014 muestras peque\u00f1as")
                 ),
                 tags$tr(
                   tags$td(strong("Chi-cuadrada")),
-                  tags$td("Continua"),
                   tags$td("Grados de libertad (df)"),
                   tags$td("Suma de normales al cuadrado; pruebas de ",
                           "varianza y bondad de ajuste")
+                ),
+                tags$tr(
+                  style = paste0("background:", colores$fondo),
+                  tags$td(strong("Exponencial")),
+                  tags$td("Tasa (\u03bb)"),
+                  tags$td("Tiempo entre eventos independientes (ej.: ",
+                          "tiempo de espera, tiempo hasta una falla)")
+                ),
+                tags$tr(
+                  tags$td(strong("Gamma")),
+                  tags$td("Forma (shape), tasa (rate)"),
+                  tags$td("Variables positivas y asim\u00e9tricas a la ",
+                          "derecha (ej.: tiempos de espera acumulados, ",
+                          "costos)")
+                ),
+                tags$tr(
+                  style = paste0("background:", colores$fondo),
+                  tags$td(strong("Lognormal")),
+                  tags$td("Media y sd de log(x)"),
+                  tags$td("Variables positivas cuyo logaritmo es normal ",
+                          "(ej.: ingresos, concentraciones)")
+                ),
+                tags$tr(
+                  tags$td(strong("Beta")),
+                  tags$td("Forma 1 y forma 2 (shape1, shape2)"),
+                  tags$td("Proporciones o tasas \u2014 valores estrictamente ",
+                          "entre 0 y 1 (ej.: porcentajes, probabilidades)")
+                ),
+                tags$tr(
+                  tags$td(colspan = "3",
+                         style = paste0("background:", colores$secundario,
+                                       "; color: #ffffff; font-weight:700;"),
+                         "Discretas")
+                ),
+                tags$tr(
+                  tags$td(strong("Binomial")),
+                  tags$td("n ensayos, p probabilidad de \u00e9xito"),
+                  tags$td("Conteo de \u00e9xitos en n ensayos independientes ",
+                          "(s\u00ed/no)")
+                ),
+                tags$tr(
+                  style = paste0("background:", colores$fondo),
+                  tags$td(strong("Poisson")),
+                  tags$td("\u03bb (tasa promedio de ocurrencia)"),
+                  tags$td("Conteos raros en un intervalo de tiempo/espacio")
                 )
               )
             )
+          ),
+
+          div(
+            class = "alert alert-secondary small py-2 px-3 mb-3",
+            bs_icon("info-circle", class = "me-1",
+                    style = paste0("color:", colores$primario)),
+            strong("\u00bfQu\u00e9 es una \"cola pesada\"? "),
+            "Los valores extremos (muy alejados de la media) son ",
+            strong("m\u00e1s probables"), " de lo que predice la normal. La ",
+            "curva de densidad no cae tan r\u00e1pido hacia cero en los ",
+            "extremos \u2014 se queda \"m\u00e1s alta\" m\u00e1s lejos del ",
+            "centro. Por eso, con colas pesadas es m\u00e1s com\u00fan ",
+            "observar un dato sorprendentemente grande o peque\u00f1o de lo ",
+            "que esperar\u00edas con una normal."
           ),
 
           h5(style = paste0("color:", colores$primario, "; font-weight:700;"),
@@ -156,10 +211,13 @@ mod_distribuciones_ui <- function(id) {
             card(
               card_header(bs_icon("sliders", class = "me-1"), "Par\u00e1metros"),
               card_body(
-                radioButtons(
+                selectInput(
                   ns("familia_sim_dist"), "Distribuci\u00f3n:",
-                  choices = c("Normal", "Binomial", "Poisson",
-                             "t de Student", "Chi-cuadrada"),
+                  choices = list(
+                    "Continuas" = c("Normal", "t de Student", "Chi-cuadrada",
+                                   "Exponencial", "Gamma", "Lognormal", "Beta"),
+                    "Discretas" = c("Binomial", "Poisson")
+                  ),
                   selected = "Normal"
                 ),
                 uiOutput(ns("parametros_sim_dist")),
@@ -265,6 +323,7 @@ mod_distribuciones_ui <- function(id) {
               card_header(bs_icon("sliders", class = "me-1"), "Controles"),
               card_body(
                 uiOutput(ns("sel_var_dist")),
+                uiOutput(ns("tipo_var_dist_ui")),
                 uiOutput(ns("sel_candidatas_dist")),
                 actionButton(ns("ajustar_dist"), "Ajustar y comparar",
                              class = "btn-primary w-100 btn-sm",
@@ -328,7 +387,27 @@ mod_distribuciones_server <- function(id) {
                                      min = 1, max = 60, value = 5, step = 1),
         "Chi-cuadrada" = sliderInput(ns("df_chi_sim_dist"),
                                      "Grados de libertad (df):",
-                                     min = 1, max = 30, value = 3, step = 1)
+                                     min = 1, max = 30, value = 3, step = 1),
+        "Exponencial" = sliderInput(ns("rate_exp_sim_dist"), "Tasa (\u03bb):",
+                                    min = 0.1, max = 5, value = 1, step = 0.1),
+        "Gamma" = tagList(
+          sliderInput(ns("shape_gamma_sim_dist"), "Forma (shape):",
+                      min = 0.5, max = 10, value = 2, step = 0.5),
+          sliderInput(ns("rate_gamma_sim_dist"), "Tasa (rate):",
+                      min = 0.1, max = 5, value = 1, step = 0.1)
+        ),
+        "Lognormal" = tagList(
+          sliderInput(ns("meanlog_sim_dist"), "Media de log(x):",
+                      min = -2, max = 3, value = 0, step = 0.1),
+          sliderInput(ns("sdlog_sim_dist"), "SD de log(x):",
+                      min = 0.1, max = 2, value = 0.5, step = 0.1)
+        ),
+        "Beta" = tagList(
+          sliderInput(ns("shape1_beta_sim_dist"), "Forma 1 (shape1):",
+                      min = 0.5, max = 10, value = 2, step = 0.5),
+          sliderInput(ns("shape2_beta_sim_dist"), "Forma 2 (shape2):",
+                      min = 0.5, max = 10, value = 2, step = 0.5)
+        )
       )
     })
 
@@ -360,6 +439,27 @@ mod_distribuciones_server <- function(id) {
         "Chi-cuadrada" = {
           req(input$df_chi_sim_dist)
           list(x = stats::rchisq(n, input$df_chi_sim_dist), discreta = FALSE)
+        },
+        "Exponencial" = {
+          req(input$rate_exp_sim_dist)
+          list(x = stats::rexp(n, input$rate_exp_sim_dist), discreta = FALSE)
+        },
+        "Gamma" = {
+          req(input$shape_gamma_sim_dist, input$rate_gamma_sim_dist)
+          list(x = stats::rgamma(n, shape = input$shape_gamma_sim_dist,
+                                rate = input$rate_gamma_sim_dist),
+               discreta = FALSE)
+        },
+        "Lognormal" = {
+          req(input$meanlog_sim_dist, input$sdlog_sim_dist)
+          list(x = stats::rlnorm(n, input$meanlog_sim_dist, input$sdlog_sim_dist),
+               discreta = FALSE)
+        },
+        "Beta" = {
+          req(input$shape1_beta_sim_dist, input$shape2_beta_sim_dist)
+          list(x = stats::rbeta(n, input$shape1_beta_sim_dist,
+                                input$shape2_beta_sim_dist),
+               discreta = FALSE)
         }
       )
     })
@@ -584,21 +684,39 @@ mod_distribuciones_server <- function(id) {
       x[!is.na(x)]
     })
 
-    es_conteo_dist <- reactive({
+    # Sugerencia autom\u00e1tica al cambiar de variable, pero el usuario
+    # siempre puede corregirla manualmente (ej. peso en gramos es
+    # continua aunque sean valores enteros).
+    output$tipo_var_dist_ui <- renderUI({
       req(valores_dist())
-      es_discreta_conteo(valores_dist())
+      radioButtons(ns("tipo_var_dist"), "Tipo de variable:",
+                   choices  = c("Continua" = "continua",
+                               "Conteo (discreta)" = "conteo"),
+                   selected = sugerir_tipo_variable(valores_dist()),
+                   inline   = TRUE)
+    })
+
+    es_conteo_dist <- reactive({
+      req(input$tipo_var_dist)
+      input$tipo_var_dist == "conteo"
     })
 
     output$sel_candidatas_dist <- renderUI({
-      req(valores_dist())
-      opciones <- candidatas_disponibles(valores_dist())
-      etiquetas_opciones <- etiquetas_distribuciones[opciones]
+      req(valores_dist(), input$tipo_var_dist)
+      opciones <- candidatas_disponibles(valores_dist(), input$tipo_var_dist)
+      # names = etiqueta legible (se muestra); values = c\u00f3digo interno
+      # (se devuelve en input$candidatas_dist)
+      opciones_choices <- stats::setNames(opciones,
+                                          etiquetas_distribuciones[opciones])
       checkboxGroupInput(ns("candidatas_dist"), "Distribuciones a comparar:",
-                          choices  = etiquetas_opciones,
-                          selected = etiquetas_opciones)
+                          choices  = opciones_choices,
+                          selected = opciones_choices)
     })
 
     output$plot_cullen_frey_dist <- renderPlot({
+      ancho <- session$clientData[[paste0("output_", ns("plot_cullen_frey_dist"),
+                                          "_width")]]
+      req(ancho, ancho > 0)
       x <- valores_dist()
       req(length(x) > 4)
       graphics::par(mar = c(4, 4, 3, 8))
@@ -657,11 +775,32 @@ mod_distribuciones_server <- function(id) {
       } else {
         div(class = "alert alert-info small mt-2",
             bs_icon("lightbulb-fill", class = "me-1"),
-            "El punto rojo (\"Observation\") es tu variable; los puntos ",
-            "naranjas alrededor son remuestreos bootstrap que reflejan la ",
-            "incertidumbre de esa ubicaci\u00f3n. Mientras m\u00e1s cerca ",
-            "est\u00e9 de un punto/l\u00ednea te\u00f3rica (normal, ",
-            "exponencial, lognormal...), m\u00e1s plausible es esa ",
+            strong("C\u00f3mo leer el gr\u00e1fico:"),
+            tags$ul(
+              class = "mb-1 ps-3",
+              tags$li(strong("Punto rojo (\"Observation\"): "), "tu variable. ",
+                     "Los puntos naranjas alrededor son remuestreos ",
+                     "bootstrap que reflejan la incertidumbre de esa ",
+                     "ubicaci\u00f3n."),
+              tags$li(strong("S\u00edmbolos fijos "),
+                     "(normal *, uniforme \u25b3, exponencial \u2612, ",
+                     "log\u00edstica +): cada uno es un \u00fanico valor ",
+                     "te\u00f3rico de asimetr\u00eda\u00b2/curtosis \u2014 esas ",
+                     "distribuciones no tienen un par\u00e1metro de forma ",
+                     "que las cambie."),
+              tags$li(strong("L\u00edneas "), "(lognormal punteada, gamma ",
+                     "guionada): representan un rango de formas posibles, ",
+                     "seg\u00fan su par\u00e1metro de forma."),
+              tags$li(strong("\u00c1rea gris: "), "regi\u00f3n alcanzable por ",
+                     "la distribuci\u00f3n Beta \u2014 al tener dos ",
+                     "par\u00e1metros de forma, puede cubrir un \u00e1rea ",
+                     "amplia en vez de un solo punto o l\u00ednea."),
+              tags$li(strong("Weibull "), "no se dibuja directamente (sus ",
+                     "formas quedan muy cerca de gamma/lognormal); solo ",
+                     "aparece como nota en la leyenda.")
+            ),
+            "Mientras m\u00e1s cerca est\u00e9 el punto rojo de un ",
+            "s\u00edmbolo, l\u00ednea o \u00e1rea, m\u00e1s plausible es esa ",
             "distribuci\u00f3n como candidata."
         )
       }
@@ -669,11 +808,8 @@ mod_distribuciones_server <- function(id) {
 
     ajuste_realizado <- eventReactive(input$ajustar_dist, {
       x <- valores_dist()
-      candidatas_nombres <- input$candidatas_dist
-      req(length(candidatas_nombres) > 0)
-      codigos <- names(etiquetas_distribuciones)[
-        match(candidatas_nombres, etiquetas_distribuciones)
-      ]
+      codigos <- input$candidatas_dist
+      req(length(codigos) > 0)
       ajustar_candidatas(x, codigos)
     })
 
@@ -696,7 +832,11 @@ mod_distribuciones_server <- function(id) {
         tags$hr(),
         h5(style = paste0("color:", colores$primario, "; font-weight:700;"),
            "Densidad ajustada y gr\u00e1fico Q-Q"),
-        plotOutput(ns("plot_comparacion_dist"), height = "360px")
+        layout_columns(
+          col_widths = c(6, 6),
+          plotOutput(ns("plot_denscomp_dist"), height = "360px"),
+          plotOutput(ns("plot_qqcomp_dist"), height = "360px")
+        )
       )
     })
 
@@ -708,14 +848,38 @@ mod_distribuciones_server <- function(id) {
                 class = "table-sm table-striped")
     })
 
-    output$plot_comparacion_dist <- renderPlot({
+    output$plot_denscomp_dist <- renderPlot({
       fits <- ajuste_realizado()
       req(length(fits) > 0)
-      graphics::par(mfrow = c(1, 2))
-      fitdistrplus::denscomp(fits, legendtext = names(fits),
-                            main = "Densidad observada vs. ajustada")
-      fitdistrplus::qqcomp(fits, legendtext = names(fits),
-                           main = "Gr\u00e1fico Q-Q")
+      tryCatch({
+        fitdistrplus::denscomp(fits, legendtext = names(fits),
+                              plotstyle = "ggplot") +
+          ggplot2::labs(title = "Densidad observada vs. ajustada") +
+          theme_minimal(base_size = 12) +
+          theme(plot.background = element_rect(fill = colores$fondo, color = NA))
+      }, error = function(e) {
+        ggplot() + annotate("text", x = 0, y = 0,
+                            label = paste("No se pudo graficar:",
+                                         conditionMessage(e))) +
+          theme_void()
+      })
+    })
+
+    output$plot_qqcomp_dist <- renderPlot({
+      fits <- ajuste_realizado()
+      req(length(fits) > 0)
+      tryCatch({
+        fitdistrplus::qqcomp(fits, legendtext = names(fits),
+                             plotstyle = "ggplot") +
+          ggplot2::labs(title = "Gr\u00e1fico Q-Q") +
+          theme_minimal(base_size = 12) +
+          theme(plot.background = element_rect(fill = colores$fondo, color = NA))
+      }, error = function(e) {
+        ggplot() + annotate("text", x = 0, y = 0,
+                            label = paste("No se pudo graficar:",
+                                         conditionMessage(e))) +
+          theme_void()
+      })
     })
 
     # ── Código R ──────────────────────────────────────
@@ -734,10 +898,8 @@ mod_distribuciones_server <- function(id) {
           attitude = "attitude <- datasets::attitude"
         )
       }
-      codigos <- names(etiquetas_distribuciones)[
-        match(input$candidatas_dist, etiquetas_distribuciones)
-      ]
-      es_conteo <- es_discreta_conteo(valores_dist())
+      codigos <- input$candidatas_dist
+      es_conteo <- es_conteo_dist()
       linea_ajustes <- paste0(
         "ajustes <- list(\n",
         paste0("  ", codigos, " = fitdistrplus::fitdist(x, \"", codigos, "\")",
