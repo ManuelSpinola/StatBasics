@@ -1,17 +1,43 @@
 Package: StatBasics
-Title: An Amazing Shiny App
-Version: 0.0.0.9000
+Title: Basic Statistical Concepts Explained Interactively
+Version: 0.1.0
+Date: 2026-07-06
 Authors@R: 
-    person(given = "firstname",
-           family = "lastname",
+    person(given = "Manuel",
+           family = "Spinola",
            role = c("aut", "cre"),
-           email = "your@email.com")
-Description: What the package does (one paragraph).
-License: What license is it under?
-Imports: 
-    config,
-    golem,
-    shiny
+           email = "mspinola10@gmail.com",
+           comment = c(ORCID = "0000-0002-7839-1908"))
+Description: A didactic, interactive Shiny (golem) application for learning
+    fundamental statistical concepts: measures of central tendency and
+    dispersion, probability distributions, standard error, confidence
+    intervals, correlation, and basic probability. Each module combines
+    theory, real datasets, and interactive simulations. It is the
+    foundational app of the StatSuite ecosystem, alongside StatModels
+    (frequentist), StatML (machine learning), and StatBayes (Bayesian).
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.1.1
+URL: https://github.com/ManuelSpinola/StatBasics
+BugReports: https://github.com/ManuelSpinola/StatBasics/issues
+Imports: 
+    bslib,
+    bsicons,
+    carData,
+    config,
+    dplyr,
+    DT,
+    ggplot2,
+    golem,
+    MASS,
+    moments,
+    palmerpenguins,
+    purrr,
+    readr,
+    readxl,
+    scales,
+    shiny,
+    shinyjs,
+    tibble,
+    tidyr
+Config/roxygen2/version: 8.0.0
