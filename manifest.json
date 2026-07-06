@@ -76,6 +76,39 @@
         "Built": "R 4.6.0; aarch64-apple-darwin23; 2026-04-25 08:58:51 UTC; unix"
       }
     },
+    "Matrix": {
+      "Source": "CRAN",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
+      "description": {
+        "Package": "Matrix",
+        "Version": "1.7-5",
+        "VersionNote": "do also bump src/version.h, inst/include/Matrix/version.h",
+        "Date": "2026-03-20",
+        "Priority": "recommended",
+        "Title": "Sparse and Dense Matrix Classes and Methods",
+        "Description": "A rich hierarchy of sparse and dense matrix classes,\n\tincluding general, symmetric, triangular, and diagonal matrices\n\twith numeric, logical, or pattern entries.  Efficient methods for\n\toperating on such matrices, often wrapping the 'BLAS', 'LAPACK',\n\tand 'SuiteSparse' libraries.",
+        "License": "GPL (>= 2) | file LICENCE",
+        "URL": "https://Matrix.R-forge.R-project.org",
+        "BugReports": "https://R-forge.R-project.org/tracker/?atid=294&group_id=61",
+        "Contact": "Matrix-authors@R-project.org",
+        "Authors@R": "\n\tc(person(\"Douglas\", \"Bates\", role = \"aut\",\n\t         comment = c(ORCID = \"0000-0001-8316-9503\")),\n\t  person(\"Martin\", \"Maechler\", role = c(\"aut\", \"cre\"),\n\t         email = \"mmaechler+Matrix@gmail.com\",\n\t         comment = c(ORCID = \"0000-0002-8685-9910\")),\n\t  person(\"Mikael\", \"Jagan\", role = \"aut\",\n\t         comment = c(ORCID = \"0000-0002-3542-2938\")),\n\t  person(\"Timothy A.\", \"Davis\", role = \"ctb\",\n\t         comment = c(ORCID = \"0000-0001-7614-6899\",\n\t                     \"SuiteSparse libraries\",\n\t                     \"collaborators listed in dir(system.file(\\\"doc\\\", \\\"SuiteSparse\\\", package=\\\"Matrix\\\"), pattern=\\\"License\\\", full.names=TRUE, recursive=TRUE)\")),\n\t  person(\"George\", \"Karypis\", role = \"ctb\",\n\t         comment = c(ORCID = \"0000-0003-2753-1437\",\n\t                     \"METIS library\",\n\t                     \"Copyright: Regents of the University of Minnesota\")),\n\t  person(\"Jason\", \"Riedy\", role = \"ctb\",\n\t         comment = c(ORCID = \"0000-0002-4345-4200\",\n\t                     \"GNU Octave's condest() and onenormest()\",\n\t                     \"Copyright: Regents of the University of California\")),\n\t  person(\"Jens\", \"Oehlschlägel\", role = \"ctb\",\n\t         comment = \"initial nearPD()\"),\n\t  person(\"R Core Team\", role = \"ctb\",\n\t         comment = c(ROR = \"02zz1nj61\", \"base R's matrix implementation\")))",
+        "Depends": "R (>= 4.4), methods",
+        "Imports": "grDevices, graphics, grid, lattice, stats, utils",
+        "Suggests": "MASS, datasets, sfsmisc, tools",
+        "Enhances": "SparseM, graph",
+        "LazyData": "no",
+        "LazyDataNote": "not possible, since we use data/*.R and our S4 classes",
+        "BuildResaveData": "no",
+        "Encoding": "UTF-8",
+        "NeedsCompilation": "yes",
+        "Packaged": "2026-03-20 19:40:14 UTC; maechler",
+        "Author": "Douglas Bates [aut] (ORCID: <https://orcid.org/0000-0001-8316-9503>),\n  Martin Maechler [aut, cre] (ORCID:\n    <https://orcid.org/0000-0002-8685-9910>),\n  Mikael Jagan [aut] (ORCID: <https://orcid.org/0000-0002-3542-2938>),\n  Timothy A. Davis [ctb] (ORCID: <https://orcid.org/0000-0001-7614-6899>,\n    SuiteSparse libraries, collaborators listed in\n    dir(system.file(\"doc\", \"SuiteSparse\", package=\"Matrix\"),\n    pattern=\"License\", full.names=TRUE, recursive=TRUE)),\n  George Karypis [ctb] (ORCID: <https://orcid.org/0000-0003-2753-1437>,\n    METIS library, Copyright: Regents of the University of Minnesota),\n  Jason Riedy [ctb] (ORCID: <https://orcid.org/0000-0002-4345-4200>, GNU\n    Octave's condest() and onenormest(), Copyright: Regents of the\n    University of California),\n  Jens Oehlschlägel [ctb] (initial nearPD()),\n  R Core Team [ctb] (ROR: <https://ror.org/02zz1nj61>, base R's matrix\n    implementation)",
+        "Maintainer": "Martin Maechler <mmaechler+Matrix@gmail.com>",
+        "Repository": "CRAN",
+        "Date/Publication": "2026-03-21 14:40:03 UTC",
+        "Built": "R 4.6.0; aarch64-apple-darwin23; 2026-04-25 08:58:56 UTC; unix"
+      }
+    },
     "R6": {
       "Source": "CRAN",
       "Repository": "https://packagemanager.posit.co/cran/latest",
@@ -978,6 +1011,34 @@
         "RemoteSha": "1.2.0"
       }
     },
+    "fitdistrplus": {
+      "Source": "CRAN",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
+      "description": {
+        "Package": "fitdistrplus",
+        "Title": "Help to Fit of a Parametric Distribution to Non-Censored or\nCensored Data",
+        "Version": "1.2-6",
+        "Authors@R": "c(person(\"Marie-Laure\", \"Delignette-Muller\", role = \"aut\", email = \"marielaure.delignettemuller@vetagro-sup.fr\", comment = c(ORCID = \"0000-0001-5453-3994\")),\n             person(\"Christophe\", \"Dutang\", role = \"aut\", email = \"christophe.dutang@ensimag.fr\", comment = c(ORCID = \"0000-0001-6732-1501\")),\n             person(\"Regis\", \"Pouillot\", role = \"ctb\"),\n             person(\"Jean-Baptiste\", \"Denis\", role = \"ctb\"),\n             person(\"Aurélie\", \"Siberchicot\", role = c(\"aut\", \"cre\"), email = \"aurelie.siberchicot@univ-lyon1.fr\", comment = c(ORCID = \"0000-0002-7638-8318\")))",
+        "Description": "Extends the fitdistr() function (of the MASS package) with several functions \n  to help the fit of a parametric distribution to non-censored or censored data. \n  Censored data may contain left censored, right censored and interval censored values, \n  with several lower and upper bounds. In addition to maximum likelihood estimation (MLE), \n  the package provides moment matching (MME), quantile matching (QME), maximum goodness-of-fit \n  estimation (MGE) and maximum spacing estimation (MSE) methods (available only for \n  non-censored data). Weighted versions of MLE, MME, QME and MSE are available. See e.g. \n  Casella & Berger (2002), Statistical inference, Pacific Grove, for a general introduction \n  to parametric estimation.",
+        "Depends": "R (>= 3.5.0), MASS, grDevices, survival, methods",
+        "Imports": "stats, rlang",
+        "Suggests": "actuar, rgenoud, mc2d, gamlss.dist, knitr, ggplot2,\nGeneralizedHyperbolic, rmarkdown, Hmisc, bookdown",
+        "VignetteBuilder": "knitr",
+        "BuildVignettes": "true",
+        "License": "GPL (>= 2)",
+        "Encoding": "UTF-8",
+        "URL": "https://lbbe-software.github.io/fitdistrplus/,\nhttps://lbbe.univ-lyon1.fr/fr/fitdistrplus,\nhttps://github.com/lbbe-software/fitdistrplus",
+        "BugReports": "https://github.com/lbbe-software/fitdistrplus/issues",
+        "Contact": "Marie-Laure Delignette-Muller\n<marielaure.delignettemuller@vetagro-sup.fr> or Christophe\nDutang <christophe.dutang@ensimag.fr>",
+        "NeedsCompilation": "no",
+        "Packaged": "2026-01-23 12:49:31 UTC; siberchicot",
+        "Author": "Marie-Laure Delignette-Muller [aut] (ORCID:\n    <https://orcid.org/0000-0001-5453-3994>),\n  Christophe Dutang [aut] (ORCID:\n    <https://orcid.org/0000-0001-6732-1501>),\n  Regis Pouillot [ctb],\n  Jean-Baptiste Denis [ctb],\n  Aurélie Siberchicot [aut, cre] (ORCID:\n    <https://orcid.org/0000-0002-7638-8318>)",
+        "Maintainer": "Aurélie Siberchicot <aurelie.siberchicot@univ-lyon1.fr>",
+        "Repository": "RSPM",
+        "Date/Publication": "2026-01-24 06:10:20 UTC",
+        "Built": "R 4.6.0; ; 2026-06-17 18:50:07 UTC; unix"
+      }
+    },
     "fontawesome": {
       "Source": "CRAN",
       "Repository": "https://packagemanager.posit.co/cran/latest",
@@ -1639,6 +1700,35 @@
         "RemoteRef": "later",
         "RemoteRepos": "https://cran.rstudio.com",
         "RemoteSha": "1.4.8"
+      }
+    },
+    "lattice": {
+      "Source": "CRAN",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
+      "description": {
+        "Package": "lattice",
+        "Version": "0.22-9",
+        "Date": "2026-02-03",
+        "Priority": "recommended",
+        "Title": "Trellis Graphics for R",
+        "Authors@R": "c(person(\"Deepayan\", \"Sarkar\", role = c(\"aut\", \"cre\"),\n\t            email = \"deepayan.sarkar@r-project.org\",\n\t\t    comment = c(ORCID = \"0000-0003-4107-1553\")),\n              person(\"Felix\", \"Andrews\", role = \"ctb\"),\n\t      person(\"Kevin\", \"Wright\", role = \"ctb\", comment = \"documentation\"),\n\t      person(\"Neil\", \"Klepeis\", role = \"ctb\"),\n\t      person(\"Johan\", \"Larsson\", role = \"ctb\", comment = \"miscellaneous improvements\"),\n              person(\"Zhijian (Jason)\", \"Wen\", role = \"cph\", comment = \"filled contour code\"),\n              person(\"Paul\", \"Murrell\", role = \"ctb\", email = \"paul@stat.auckland.ac.nz\"),\n\t      person(\"Stefan\", \"Eng\", role = \"ctb\", comment = \"violin plot improvements\"),\n\t      person(\"Achim\", \"Zeileis\", role = \"ctb\", comment = \"modern colors\"),\n              person(\"Alexandre\", \"Courtiol\", role = \"ctb\", comment = \"generics for larrows, lpolygon, lrect and lsegments\")\n\t      )",
+        "Description": "A powerful and elegant high-level data visualization\n  system inspired by Trellis graphics, with an emphasis on\n  multivariate data. Lattice is sufficient for typical graphics needs,\n  and is also flexible enough to handle most nonstandard requirements.\n  See ?Lattice for an introduction.",
+        "Depends": "R (>= 4.0.0)",
+        "Suggests": "KernSmooth, MASS, latticeExtra, colorspace",
+        "Imports": "grid, grDevices, graphics, stats, utils",
+        "Enhances": "chron, zoo",
+        "LazyLoad": "yes",
+        "LazyData": "yes",
+        "License": "GPL (>= 2)",
+        "URL": "https://lattice.r-forge.r-project.org/",
+        "BugReports": "https://github.com/deepayan/lattice/issues",
+        "NeedsCompilation": "yes",
+        "Packaged": "2026-02-08 19:21:28 UTC; deepayan",
+        "Author": "Deepayan Sarkar [aut, cre] (ORCID:\n    <https://orcid.org/0000-0003-4107-1553>),\n  Felix Andrews [ctb],\n  Kevin Wright [ctb] (documentation),\n  Neil Klepeis [ctb],\n  Johan Larsson [ctb] (miscellaneous improvements),\n  Zhijian (Jason) Wen [cph] (filled contour code),\n  Paul Murrell [ctb],\n  Stefan Eng [ctb] (violin plot improvements),\n  Achim Zeileis [ctb] (modern colors),\n  Alexandre Courtiol [ctb] (generics for larrows, lpolygon, lrect and\n    lsegments)",
+        "Maintainer": "Deepayan Sarkar <deepayan.sarkar@r-project.org>",
+        "Repository": "CRAN",
+        "Date/Publication": "2026-02-09 06:10:13 UTC",
+        "Built": "R 4.6.0; aarch64-apple-darwin23; 2026-04-25 08:58:51 UTC; unix"
       }
     },
     "lazyeval": {
@@ -2763,6 +2853,33 @@
         "RemoteSha": "1.6.0"
       }
     },
+    "survival": {
+      "Source": "CRAN",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
+      "description": {
+        "Title": "Survival Analysis",
+        "Priority": "recommended",
+        "Package": "survival",
+        "Version": "3.8-6",
+        "Date": "2026-01-09",
+        "Depends": "R (>= 3.5.0)",
+        "Imports": "graphics, Matrix, methods, splines, stats, utils",
+        "LazyData": "Yes",
+        "LazyDataCompression": "xz",
+        "ByteCompile": "Yes",
+        "Authors@R": "c(person(c(\"Terry\", \"M\"), \"Therneau\",\n                    email=\"therneau.terry@mayo.edu\",\n\t            role=c(\"aut\", \"cre\")),\n               person(\"Thomas\", \"Lumley\", role=c(\"ctb\", \"trl\"),\n\t       comment=\"original S->R port and R maintainer until 2009\"),\n\t       person(\"Atkinson\", \"Elizabeth\", role=\"ctb\"),\n\t       person(\"Crowson\", \"Cynthia\", role=\"ctb\"))",
+        "Description": "Contains the core survival analysis routines, including\n\t     definition of Surv objects, \n\t     Kaplan-Meier and Aalen-Johansen (multi-state) curves, Cox models,\n\t     and parametric accelerated failure time models.",
+        "License": "LGPL (>= 2)",
+        "URL": "https://github.com/therneau/survival",
+        "NeedsCompilation": "yes",
+        "Packaged": "2026-01-13 02:06:39 UTC; therneau",
+        "Author": "Terry M Therneau [aut, cre],\n  Thomas Lumley [ctb, trl] (original S->R port and R maintainer until\n    2009),\n  Atkinson Elizabeth [ctb],\n  Crowson Cynthia [ctb]",
+        "Maintainer": "Terry M Therneau <therneau.terry@mayo.edu>",
+        "Repository": "CRAN",
+        "Date/Publication": "2026-01-16 09:00:02 UTC",
+        "Built": "R 4.6.0; aarch64-apple-darwin23; 2026-04-25 08:59:17 UTC; unix"
+      }
+    },
     "tibble": {
       "Source": "CRAN",
       "Repository": "https://packagemanager.posit.co/cran/latest",
@@ -3231,13 +3348,13 @@
       "checksum": "6afa2008bb4d9aef319749bd1ae9a99c"
     },
     ".Rprofile": {
-      "checksum": "9d2d86922703d89d99b864e94d6ed8e9"
+      "checksum": "0968928d2d5bfe2bbd1f3b104f87e3cb"
     },
     "app.R": {
       "checksum": "ae4d8ad4e3a9ccaca48c1a78339d9128"
     },
     "DESCRIPTION": {
-      "checksum": "83c4e5df34e8bdbeafb2258dd6cf8faf"
+      "checksum": "74208a0646e84dc9f0bb14d7610a1581"
     },
     "dev/01_start.R": {
       "checksum": "27ca1a774de6761ff19bc17d67e9853f"
@@ -3251,8 +3368,8 @@
     "dev/run_dev.R": {
       "checksum": "e21d8f5db5d57cd4d0f2db6d012a6109"
     },
-    "inst/app/www/favicon.ico": {
-      "checksum": "81560d1b906a530c87fa0acbb2f5cca4"
+    "inst/app/www/favicon.png": {
+      "checksum": "9f2c2a9a7aa4ee00f812d0a1daed4592"
     },
     "inst/app/www/hexsticker_StatBasics.png": {
       "checksum": "9f2c2a9a7aa4ee00f812d0a1daed4592"
@@ -3276,7 +3393,7 @@
       "checksum": "ec20a41caf765046aeb132e2de43f0bc"
     },
     "R/app_ui.R": {
-      "checksum": "459e261ed3df639ad10315d2dc43db68"
+      "checksum": "414c3bd7dc41f03b0898c416496f522f"
     },
     "R/golem_utils.R": {
       "checksum": "7b7289ce6bd451a39ab05f2d44b6d730"
@@ -3293,17 +3410,23 @@
     "R/mod_dispersion.R": {
       "checksum": "a7399739bbe71e2c6f5e256cc20112e6"
     },
+    "R/mod_distribuciones.R": {
+      "checksum": "0d24dd926639c8f45dff716d65940030"
+    },
     "R/mod_inicio.R": {
       "checksum": "6852c5bb15f4ef3f4917f9bc0d22f33e"
     },
     "R/mod_placeholders.R": {
-      "checksum": "1f63a49a728733cf1689d3686d2c0df7"
+      "checksum": "def15b3a7db659570c33db000cbc7bf2"
     },
     "R/mod_tendencia_central.R": {
       "checksum": "08a06c6dcb7663e8042a8ab3762981cd"
     },
     "R/run_app.R": {
       "checksum": "476011bbc4ffefa824e5bfb8386d849b"
+    },
+    "R/utils_distribuciones.R": {
+      "checksum": "b19ac4fc750077bac507a25c638570f3"
     },
     "R/utils_metricas.R": {
       "checksum": "2ea2939ecf94a3a1141a4ebf28de259a"
@@ -3312,7 +3435,7 @@
       "checksum": "ba5aa7dc3b754d51e1797e7be059c624"
     },
     "renv.lock": {
-      "checksum": "f936f172aab0e4fb5a8162b28883164c"
+      "checksum": "42efc3d8abfb61b6ce0749177d1b4294"
     }
   },
   "users": null
