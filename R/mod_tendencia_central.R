@@ -27,6 +27,15 @@ moda_continua_tc <- function(x) {
   d$x[which.max(d$y)]
 }
 
+# ── Helper: coeficiente de asimetría (Fisher-Pearson, g1)
+asimetria_tc <- function(x) {
+  x <- x[!is.na(x)]
+  n <- length(x)
+  m <- mean(x)
+  s <- stats::sd(x)
+  (sum((x - m)^3) / n) / s^3
+}
+
 # ── UI ────────────────────────────────────────────────────
 mod_tendencia_central_ui <- function(id) {
   ns <- NS(id)
@@ -387,9 +396,17 @@ mod_tendencia_central_server <- function(id) {
       req(n, !is.null(sesgo), !is.null(pct_at))
 
       forma <- max(0.3, 5 - abs(sesgo))
-      base  <- if (sesgo >= 0) stats::rgamma(n, shape = forma, rate = 1)
-               else -stats::rgamma(n, shape = forma, rate = 1)
-      x <- scale(base)[, 1] * 10 + 50   # centrado en 50, escala legible
+      peso  <- abs(sesgo) / 5   # 0 = normal pura, 1 = gamma completa
+      z     <- stats::rnorm(n)
+      if (peso > 0) {
+        g       <- stats::rgamma(n, shape = forma, rate = 1)
+        g_std   <- as.numeric(scale(g))
+        base_std <- (1 - peso) * z + peso * g_std
+      } else {
+        base_std <- z
+      }
+      if (sesgo < 0) base_std <- -base_std
+      x <- base_std * 10 + 50   # centrado en 50, escala legible
 
       n_out <- round(n * pct_at / 100)
       if (n_out > 0) {
@@ -404,21 +421,21 @@ mod_tendencia_central_server <- function(id) {
       x <- datos_sim_tc()
       req(length(x) > 1)
       list(
-        media   = mean(x),
-        mediana = median(x),
-        moda    = moda_continua_tc(x)
+        media    = mean(x),
+        mediana  = median(x),
+        moda     = moda_continua_tc(x),
+        asimetria = asimetria_tc(x)
       )
     })
 
     output$cards_sim_tc <- renderUI({
       e <- estadisticos_sim_tc()
       tagList(
-        div(class = "alert alert-info small py-2 px-3 mb-1",
-            strong("Media: "), round(e$media, 2)),
-        div(class = "alert alert-info small py-2 px-3 mb-1",
-            strong("Mediana: "), round(e$mediana, 2)),
-        div(class = "alert alert-info small py-2 px-3 mb-0",
-            strong("Moda (aprox.): "), round(e$moda, 2))
+        tarjeta_metrica("Media", round(e$media, 2), "media"),
+        tarjeta_metrica("Mediana", round(e$mediana, 2), "mediana"),
+        tarjeta_metrica("Moda (aprox.)", round(e$moda, 2), "moda"),
+        tarjeta_metrica("Asimetr\u00eda (g1)", round(e$asimetria, 2),
+                        "asimetria", tipo = "secondary", ultima = TRUE)
       )
     })
 
@@ -458,12 +475,22 @@ mod_tendencia_central_server <- function(id) {
       } else {
         "Media < Mediana: la distribuci\u00f3n est\u00e1 sesgada a la izquierda."
       }
+      lect_asim <- if (abs(e$asimetria) < 0.5) {
+        "cercano a 0 \u2192 forma aproximadamente sim\u00e9trica."
+      } else if (e$asimetria >= 0.5) {
+        "positivo \u2192 cola larga hacia la derecha."
+      } else {
+        "negativo \u2192 cola larga hacia la izquierda."
+      }
       div(class = "alert alert-info small mt-2",
           bs_icon("lightbulb-fill", class = "me-1"),
           rel,
           if (input$outliers_sim_tc > 0)
             paste0(" Con ", input$outliers_sim_tc, "% de valores at\u00edpicos, ",
-                   "nota c\u00f3mo la media se mueve m\u00e1s que la mediana.")
+                   "nota c\u00f3mo la media se mueve m\u00e1s que la mediana."),
+          tags$br(),
+          strong("Coeficiente de asimetr\u00eda: "), round(e$asimetria, 2),
+          " \u2014 ", lect_asim
       )
     })
 
@@ -717,12 +744,9 @@ mod_tendencia_central_server <- function(id) {
     output$cards_estadisticos_tc <- renderUI({
       e <- estadisticos_tc()
       tagList(
-        div(class = "alert alert-info small py-2 px-3 mb-1",
-            strong("Media: "), round(e$media, 2)),
-        div(class = "alert alert-info small py-2 px-3 mb-1",
-            strong("Mediana: "), round(e$mediana, 2)),
-        div(class = "alert alert-info small py-2 px-3 mb-0",
-            strong("Moda: "), round(e$moda, 2))
+        tarjeta_metrica("Media", round(e$media, 2), "media"),
+        tarjeta_metrica("Mediana", round(e$mediana, 2), "mediana"),
+        tarjeta_metrica("Moda", round(e$moda, 2), "moda", ultima = TRUE)
       )
     })
 
@@ -739,10 +763,14 @@ mod_tendencia_central_server <- function(id) {
                   linewidth = 1, linetype = "solid") +
         geom_vline(xintercept = e$mediana, color = colores$acento,
                   linewidth = 1, linetype = "dashed") +
+        geom_vline(xintercept = e$moda, color = colores$peligro,
+                  linewidth = 1, linetype = "dotted") +
         annotate("text", x = e$media, y = Inf, label = "Media", vjust = 2,
                 color = colores$primario, fontface = "bold", size = 3.5) +
         annotate("text", x = e$mediana, y = Inf, label = "Mediana", vjust = 4,
                 color = colores$acento, fontface = "bold", size = 3.5) +
+        annotate("text", x = e$moda, y = Inf, label = "Moda", vjust = 6,
+                color = colores$peligro, fontface = "bold", size = 3.5) +
         labs(x = input$var_tc, y = "Densidad") +
         theme_minimal(base_size = 13) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA))

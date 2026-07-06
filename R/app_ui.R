@@ -9,7 +9,8 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     bslib::page_navbar(
       title = tagList(
-        bsicons::bs_icon("bar-chart-line", class = "me-2"),
+        img(src = "www/hexsticker_StatBasics.png", height = "38px",
+            style = "margin-right: 8px; vertical-align: middle;"),
         "StatBasics"
       ),
       theme        = tema_app,

@@ -391,16 +391,12 @@ mod_dispersion_server <- function(id) {
     output$cards_sim_disp <- renderUI({
       e <- estadisticos_sim_disp()
       tagList(
-        div(class = "alert alert-info small py-2 px-3 mb-1",
-            strong("Rango: "), round(e$rango, 2)),
-        div(class = "alert alert-info small py-2 px-3 mb-1",
-            strong("Varianza: "), round(e$var, 2)),
-        div(class = "alert alert-info small py-2 px-3 mb-1",
-            strong("Desv. est\u00e1ndar: "), round(e$sd, 2)),
-        div(class = "alert alert-info small py-2 px-3 mb-1",
-            strong("IQR: "), round(e$iqr, 2)),
-        div(class = "alert alert-info small py-2 px-3 mb-0",
-            strong("Coef. de variaci\u00f3n: "), round(e$cv, 1), "%")
+        tarjeta_metrica("Rango", round(e$rango, 2), "rango"),
+        tarjeta_metrica("Varianza", round(e$var, 2), "varianza"),
+        tarjeta_metrica("Desv. est\u00e1ndar", round(e$sd, 2), "sd"),
+        tarjeta_metrica("IQR", round(e$iqr, 2), "iqr"),
+        tarjeta_metrica("Coef. de variaci\u00f3n", round(e$cv, 1), "cv",
+                        sufijo = "%", ultima = TRUE)
       )
     })
 
@@ -683,16 +679,12 @@ mod_dispersion_server <- function(id) {
     output$cards_estadisticos_disp <- renderUI({
       e <- estadisticos_disp()
       tagList(
-        div(class = "alert alert-info small py-2 px-3 mb-1",
-            strong("Rango: "), round(e$rango, 2)),
-        div(class = "alert alert-info small py-2 px-3 mb-1",
-            strong("Varianza: "), round(e$var, 2)),
-        div(class = "alert alert-info small py-2 px-3 mb-1",
-            strong("Desv. est\u00e1ndar: "), round(e$sd, 2)),
-        div(class = "alert alert-info small py-2 px-3 mb-1",
-            strong("IQR: "), round(e$iqr, 2)),
-        div(class = "alert alert-info small py-2 px-3 mb-0",
-            strong("Coef. de variaci\u00f3n: "), round(e$cv, 1), "%")
+        tarjeta_metrica("Rango", round(e$rango, 2), "rango"),
+        tarjeta_metrica("Varianza", round(e$var, 2), "varianza"),
+        tarjeta_metrica("Desv. est\u00e1ndar", round(e$sd, 2), "sd"),
+        tarjeta_metrica("IQR", round(e$iqr, 2), "iqr"),
+        tarjeta_metrica("Coef. de variaci\u00f3n", round(e$cv, 1), "cv",
+                        sufijo = "%", ultima = TRUE)
       )
     })
 
