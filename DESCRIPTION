@@ -1,6 +1,6 @@
 Package: StatBasics
 Title: Basic Statistical Concepts Explained Interactively
-Version: 0.1.0
+Version: 1.0.0
 Date: 2026-07-06
 Authors@R: 
     person(given = "Manuel",
