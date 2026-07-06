@@ -163,7 +163,7 @@ mod_distribuciones_ui <- function(id) {
                   selected = "Normal"
                 ),
                 uiOutput(ns("parametros_sim_dist")),
-                sliderInput(ns("n_sim_dist"), "Tama\u00f1o de muestra (n):",
+                sliderInput(ns("n_sim_dist"), "Repeticiones de la simulaci\u00f3n (n):",
                             min = 20, max = 2000, value = 500, step = 20),
                 actionButton(ns("regenerar_sim_dist"),
                              "Nueva muestra aleatoria",
@@ -259,7 +259,7 @@ mod_distribuciones_ui <- function(id) {
             "ajustan por m\u00e1xima verosimilitud y se comparan."
           ),
           layout_columns(
-            col_widths = c(4, 8),
+            col_widths = c(3, 9),
             fill = FALSE,
             card(
               card_header(bs_icon("sliders", class = "me-1"), "Controles"),
@@ -272,10 +272,11 @@ mod_distribuciones_ui <- function(id) {
               )
             ),
             div(
-              plotOutput(ns("plot_cullen_frey_dist"), height = "340px"),
+              plotOutput(ns("plot_cullen_frey_dist"), height = "480px"),
               uiOutput(ns("insight_cullen_frey_dist"))
             )
           ),
+          uiOutput(ns("resumen_conteo_dist")),
           tags$hr(),
           uiOutput(ns("resultado_ajuste_dist"))
         )
@@ -315,7 +316,7 @@ mod_distribuciones_server <- function(id) {
                       min = 1, max = 15, value = 3, step = 0.5)
         ),
         "Binomial" = tagList(
-          sliderInput(ns("size_sim_dist"), "Ensayos (n):",
+          sliderInput(ns("size_sim_dist"), "Ensayos por experimento (size):",
                       min = 1, max = 100, value = 20, step = 1),
           sliderInput(ns("prob_sim_dist"), "Probabilidad de \u00e9xito (p):",
                       min = 0.01, max = 0.99, value = 0.5, step = 0.01)
@@ -583,6 +584,11 @@ mod_distribuciones_server <- function(id) {
       x[!is.na(x)]
     })
 
+    es_conteo_dist <- reactive({
+      req(valores_dist())
+      es_discreta_conteo(valores_dist())
+    })
+
     output$sel_candidatas_dist <- renderUI({
       req(valores_dist())
       opciones <- candidatas_disponibles(valores_dist())
@@ -595,19 +601,70 @@ mod_distribuciones_server <- function(id) {
     output$plot_cullen_frey_dist <- renderPlot({
       x <- valores_dist()
       req(length(x) > 4)
-      fitdistrplus::descdist(x, boot = 500, graph = TRUE)
+      graphics::par(mar = c(4, 4, 3, 8))
+      fitdistrplus::descdist(x, boot = 500, graph = TRUE,
+                             discrete = es_conteo_dist())
+    })
+
+    output$resumen_conteo_dist <- renderUI({
+      req(es_conteo_dist())
+      x <- valores_dist()
+      r <- resumen_dispersion_conteo(x)
+      sobredispersa <- r$indice > 1.5
+      tagList(
+        layout_columns(
+          col_widths = c(4, 4, 4),
+          tarjeta_metrica("Media", round(r$media, 2), "media"),
+          tarjeta_metrica("Varianza", round(r$varianza, 2), "varianza"),
+          div(
+            class = paste0("alert small py-2 px-3 mb-0 ",
+                          if (sobredispersa) "alert-warning" else "alert-info"),
+            strong("\u00cdndice de dispersi\u00f3n (var/media): "),
+            round(r$indice, 2),
+            tags$br(),
+            tags$span(class = "text-muted", style = "font-size: 0.78rem;",
+                      "Poisson asume que var = media (\u00edndice \u2248 1).")
+          )
+        ),
+        div(class = paste0("alert small mt-2 ",
+                          if (sobredispersa) "alert-warning" else "alert-info"),
+            bs_icon("lightbulb-fill", class = "me-1"),
+            if (sobredispersa) {
+              paste0("Hay sobredispersi\u00f3n (varianza mucho mayor que la ",
+                    "media) \u2014 la Binomial Negativa suele ajustar mejor ",
+                    "que Poisson en este caso. Este es exactamente el ",
+                    "razonamiento detr\u00e1s de elegir la familia binomial ",
+                    "negativa en un GLM/GLMM (StatModels/StatBayes).")
+            } else {
+              paste0("La varianza es cercana a la media \u2014 Poisson es ",
+                    "un modelo razonable para estos datos.")
+            }
+        )
+      )
     })
 
     output$insight_cullen_frey_dist <- renderUI({
       x <- valores_dist()
       req(length(x) > 4)
-      div(class = "alert alert-info small mt-2",
-          bs_icon("lightbulb-fill", class = "me-1"),
-          "El punto azul (\"Observation\") es tu variable. Mientras m\u00e1s ",
-          "cerca est\u00e9 de un punto/l\u00ednea te\u00f3rica (normal, ",
-          "exponencial, lognormal...), m\u00e1s plausible es esa ",
-          "distribuci\u00f3n como candidata."
-      )
+      if (es_conteo_dist()) {
+        div(class = "alert alert-info small mt-2",
+            bs_icon("lightbulb-fill", class = "me-1"),
+            "Como es una variable de conteos (enteros \u2265 0), aqu\u00ed se ",
+            "compara contra Poisson y Binomial Negativa \u2014 revisa el ",
+            "\u00edndice de dispersi\u00f3n abajo para saber cu\u00e1l es m\u00e1s ",
+            "adecuada."
+        )
+      } else {
+        div(class = "alert alert-info small mt-2",
+            bs_icon("lightbulb-fill", class = "me-1"),
+            "El punto rojo (\"Observation\") es tu variable; los puntos ",
+            "naranjas alrededor son remuestreos bootstrap que reflejan la ",
+            "incertidumbre de esa ubicaci\u00f3n. Mientras m\u00e1s cerca ",
+            "est\u00e9 de un punto/l\u00ednea te\u00f3rica (normal, ",
+            "exponencial, lognormal...), m\u00e1s plausible es esa ",
+            "distribuci\u00f3n como candidata."
+        )
+      }
     })
 
     ajuste_realizado <- eventReactive(input$ajustar_dist, {
@@ -680,6 +737,7 @@ mod_distribuciones_server <- function(id) {
       codigos <- names(etiquetas_distribuciones)[
         match(input$candidatas_dist, etiquetas_distribuciones)
       ]
+      es_conteo <- es_discreta_conteo(valores_dist())
       linea_ajustes <- paste0(
         "ajustes <- list(\n",
         paste0("  ", codigos, " = fitdistrplus::fitdist(x, \"", codigos, "\")",
@@ -694,7 +752,12 @@ mod_distribuciones_server <- function(id) {
         "library(fitdistrplus)\n\n",
         "x <- ", nm_datos, "$", input$var_dist, "\n",
         "x <- x[!is.na(x)]\n\n",
-        "descdist(x, boot = 500)  # gr\u00e1fico de Cullen y Frey\n\n",
+        "descdist(x, boot = 500, discrete = ", es_conteo, ")",
+        "  # gr\u00e1fico de Cullen y Frey\n\n",
+        if (es_conteo) {
+          paste0("# \u00cdndice de dispersi\u00f3n (var/media): Poisson asume \u2248 1\n",
+                "var(x) / mean(x)\n\n")
+        } else "",
         linea_ajustes, "\n",
         "sapply(ajustes, function(f) c(AIC = f$aic, BIC = f$bic))\n",
         "denscomp(ajustes, legendtext = names(ajustes))\n",

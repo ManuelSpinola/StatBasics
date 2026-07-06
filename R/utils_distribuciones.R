@@ -11,16 +11,44 @@ etiquetas_distribuciones <- c(
   exp     = "Exponencial",
   lnorm   = "Lognormal",
   gamma   = "Gamma",
-  weibull = "Weibull"
+  weibull = "Weibull",
+  beta    = "Beta",
+  pois    = "Poisson",
+  nbinom  = "Binomial Negativa"
 )
+
+# ── ¿Es una variable de conteos? ─────────────────────────────
+# Entera y no negativa (0, 1, 2, ...). Si es TRUE, se compara
+# contra Poisson y Binomial Negativa en vez de las continuas.
+es_discreta_conteo <- function(x) {
+  all(x >= 0) && all(abs(x - round(x)) < 1e-8)
+}
+
+# ── Resumen de dispersión para datos de conteo ──────────────
+# Índice de dispersión = varianza / media. Poisson asume que
+# ambas son iguales (índice \u2248 1); un índice >> 1 indica
+# sobredispersión, que es justo lo que motiva usar Binomial
+# Negativa en vez de Poisson (el mismo razonamiento que aplica
+# en los modelos GLM/GLMM de StatModels y StatBayes).
+resumen_dispersion_conteo <- function(x) {
+  m <- mean(x)
+  v <- stats::var(x)
+  list(media = m, varianza = v, indice = v / m)
+}
 
 # ── Candidatas plausibles según el rango de los datos ───────
 # Distribuciones que requieren valores estrictamente positivos
 # (lognormal, gamma, weibull, exponencial) solo se ofrecen si
-# todos los valores de x son > 0.
+# todos los valores de x son > 0. Beta requiere que TODOS los
+# valores est\u00e9n estrictamente entre 0 y 1 (la distribuci\u00f3n
+# Beta no est\u00e1 definida en los extremos 0 y 1 exactos).
 candidatas_disponibles <- function(x) {
+  if (es_discreta_conteo(x)) {
+    return(c("pois", "nbinom"))
+  }
   base <- c("norm", "unif")
   if (all(x > 0)) base <- c(base, "exp", "lnorm", "gamma", "weibull")
+  if (all(x > 0 & x < 1)) base <- c(base, "beta")
   base
 }
 
