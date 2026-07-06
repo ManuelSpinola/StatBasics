@@ -7,23 +7,6 @@
 # mod_tendencia_central.R).
 # ============================================================
 
-# ── Distribuciones ─────────────────────────────────────────
-mod_distribuciones_ui <- function(id) {
-  ns <- NS(id)
-  proximamente_ui(
-    icono     = "distribute-vertical",
-    titulo    = "Distribuciones de probabilidad",
-    subtitulo = paste(
-      "Normal, binomial, Poisson, t y chi-cuadrada:",
-      "forma, par\u00e1metros y cu\u00e1ndo se usa cada una."
-    ),
-    datasets  = "Simulaciones param\u00e9tricas interactivas (sin dataset fijo)"
-  )
-}
-mod_distribuciones_server <- function(id) {
-  moduleServer(id, function(input, output, session) {})
-}
-
 # ── Error estándar ──────────────────────────────────────────
 mod_error_estandar_ui <- function(id) {
   ns <- NS(id)
