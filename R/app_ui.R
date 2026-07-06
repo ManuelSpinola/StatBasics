@@ -17,6 +17,11 @@ app_ui <- function(request) {
       id           = "navbar_principal",
       window_title = "StatBasics \u00b7 StatSuite",
       fillable     = TRUE,
+      footer = div(
+        class = "text-center small py-2",
+        style = paste0("background:", colores$primario, "; color: white;"),
+        "Manuel Sp\u00ednola \u00b7 ICOMVIS \u00b7 Universidad Nacional \u00b7 Costa Rica"
+      ),
 
       bslib::nav_panel(
         title = tagList(bsicons::bs_icon("house", class = "me-1"), "Inicio"),
