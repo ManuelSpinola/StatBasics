@@ -10,8 +10,8 @@ mod_inicio_ui <- function(id) {
     div(
       class = "py-4 px-3 text-center",
       style = "max-width: 780px; margin: 0 auto;",
-      bs_icon("bar-chart-line", size = "3.5em",
-              style = paste0("color:", colores$primario)),
+      img(src = "www/hexsticker_StatBasics.png", height = "130px",
+          style = "display:block; margin: 0 auto;"),
       h2(
         class = "mt-3 mb-2",
         style = paste0("color:", colores$primario, "; font-weight:700;"),
@@ -32,7 +32,11 @@ mod_inicio_ui <- function(id) {
           bs_icon("info-circle-fill", class = "me-1"),
           strong("Parte de StatSuite."), br(),
           "Complementa a StatModels (frecuentista), StatML (aprendizaje ",
-          "autom\u00e1tico) y StatBayes (bayesiano)."
+          "autom\u00e1tico), StatBayes (bayesiano) y otras apps m\u00e1s \u2014 conoce ",
+          "toda la suite en ",
+          tags$a(href = "https://statsuite.netlify.app", target = "_blank",
+                 "statsuite.netlify.app"),
+          "."
         ),
         div(
           class = "alert alert-info small text-start py-2 px-3 mb-0",
