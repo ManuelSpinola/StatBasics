@@ -20,6 +20,15 @@ ic_correlacion_pearson <- function(r, n, conf = 0.95) {
   )
 }
 
+# ── Interpretación cualitativa de Cohen's d ─────────────────
+interpretar_cohen_d <- function(d) {
+  ad <- abs(d)
+  if (ad < 0.2)      "muy peque\u00f1o"
+  else if (ad < 0.5) "peque\u00f1o"
+  else if (ad < 0.8) "moderado"
+  else               "grande"
+}
+
 # ── Interpretación cualitativa de la fuerza de r ────────────
 interpretar_fuerza_r <- function(r) {
   ar <- abs(r)
