@@ -59,6 +59,18 @@ app_ui <- function(request) {
       ),
 
       bslib::nav_panel(
+        title = tagList(bsicons::bs_icon("check2-square", class = "me-1"),
+                        "Pruebas de hip\u00f3tesis"),
+        mod_pruebas_hipotesis_ui("pruebas_hipotesis")
+      ),
+
+      bslib::nav_panel(
+        title = tagList(bsicons::bs_icon("arrows-angle-expand", class = "me-1"),
+                        "Tama\u00f1o del efecto"),
+        mod_tamano_efecto_ui("tamano_efecto")
+      ),
+
+      bslib::nav_panel(
         title = tagList(bsicons::bs_icon("dice-5", class = "me-1"),
                         "Probabilidad b\u00e1sica"),
         mod_probabilidad_ui("probabilidad")
