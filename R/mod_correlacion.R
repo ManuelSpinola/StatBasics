@@ -34,8 +34,7 @@ mod_correlacion_ui <- function(id) {
         class = "text-muted mb-0",
         "Hasta ahora describiste ", strong("una variable"), " a la vez. La ",
         "correlaci\u00f3n es el primer paso hacia describir ", strong(
-        "relaciones entre dos variables"), " \u2014 la base de todo lo que ",
-        "viene despu\u00e9s en StatModels."
+        "relaciones entre dos variables"), "."
       )
     ),
 
@@ -119,6 +118,34 @@ mod_correlacion_ui <- function(id) {
                   "con muestras peque\u00f1as o muchos valores empatados."
                 )
               )
+            )
+          ),
+
+          conector_infografia("Un límite importante: r solo detecta ciertos tipos de relación"),
+
+          tarjeta_concepto(
+            "exclamation-triangle", colores$acento,
+            "r puede ser 0 aunque SÍ exista una relación clara",
+            p(class = "mb-2",
+              "Pearson solo detecta relaciones ", strong("lineales"),
+              " (l\u00ednea recta); Spearman/Kendall solo relaciones ",
+              strong("mon\u00f3tonas"), " (siempre sube o siempre baja). Si la ",
+              "relaci\u00f3n tiene otra forma \u2014 una U, una onda, una X, un ",
+              "c\u00edrculo \u2014 estos coeficientes pueden dar ", strong("r \u2248 0"),
+              ", ", em("a pesar de que hay un patr\u00f3n perfectamente claro"),
+              ":"
+            ),
+            fluidRow(
+              column(3, plotOutput(ns("plot_nolineal_onda"), height = "160px")),
+              column(3, plotOutput(ns("plot_nolineal_parabola"), height = "160px")),
+              column(3, plotOutput(ns("plot_nolineal_x"), height = "160px")),
+              column(3, plotOutput(ns("plot_nolineal_circulo"), height = "160px"))
+            ),
+            p(class = "mt-2 mb-0 text-muted small",
+              "Por eso ", strong("siempre conviene graficar tus datos"),
+              " (nunca confiar solo en el n\u00famero de r) \u2014 un scatter ",
+              "revela patrones que el coeficiente por s\u00ed solo puede ",
+              "esconder por completo."
             )
           ),
 
@@ -315,6 +342,66 @@ mod_correlacion_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
+    # ── ¿Qué es? — relaciones no lineales con r ≈ 0 ───
+    # Cada panel es independiente y simple (mismo patrón seguro
+    # usado en Error Est\u00e1ndar) para evitar problemas de tama\u00f1o
+    # de dispositivo gr\u00e1fico con paneles combinados.
+    tema_mini_cor <- function() {
+      theme_minimal(base_size = 10) +
+        theme(axis.text = element_blank(), axis.title = element_blank(),
+              axis.ticks = element_blank(),
+              plot.title = element_text(face = "bold", size = 10,
+                                        color = colores$primario, hjust = 0.5),
+              plot.background = element_rect(fill = colores$fondo, color = NA),
+              panel.grid = element_blank())
+    }
+
+    output$plot_nolineal_onda <- renderPlot({
+      set.seed(42)
+      x <- stats::runif(400, -4, 4)
+      y <- sin(x) + stats::rnorm(400, sd = 0.15)
+      r <- round(stats::cor(x, y), 2)
+      ggplot(data.frame(x, y), aes(x, y)) +
+        geom_point(color = colores$primario, alpha = 0.5, size = 0.8) +
+        labs(title = paste0("Onda (r=", r, ")")) +
+        tema_mini_cor()
+    })
+
+    output$plot_nolineal_parabola <- renderPlot({
+      set.seed(43)
+      x <- stats::runif(400, -3, 3)
+      y <- x^2 + stats::rnorm(400, sd = 1)
+      r <- round(stats::cor(x, y), 2)
+      ggplot(data.frame(x, y), aes(x, y)) +
+        geom_point(color = colores$acento, alpha = 0.5, size = 0.8) +
+        labs(title = paste0("Par\u00e1bola (r=", r, ")")) +
+        tema_mini_cor()
+    })
+
+    output$plot_nolineal_x <- renderPlot({
+      set.seed(44)
+      x <- stats::rnorm(400)
+      signo <- ifelse(stats::runif(400) < 0.5, 1, -1)
+      y <- signo * x + stats::rnorm(400, sd = 0.2)
+      r <- round(stats::cor(x, y), 2)
+      ggplot(data.frame(x, y), aes(x, y)) +
+        geom_point(color = colores$secundario, alpha = 0.5, size = 0.8) +
+        labs(title = paste0("Forma de X (r=", r, ")")) +
+        tema_mini_cor()
+    })
+
+    output$plot_nolineal_circulo <- renderPlot({
+      set.seed(45)
+      theta <- stats::runif(400, 0, 2 * pi)
+      x <- cos(theta) + stats::rnorm(400, sd = 0.05)
+      y <- sin(theta) + stats::rnorm(400, sd = 0.05)
+      r <- round(stats::cor(x, y), 2)
+      ggplot(data.frame(x, y), aes(x, y)) +
+        geom_point(color = colores$peligro, alpha = 0.5, size = 0.8) +
+        labs(title = paste0("C\u00edrculo (r=", r, ")")) +
+        tema_mini_cor()
+    })
+
     # ── Simulación interactiva ─────────────────────────
     datos_sim_cor <- reactive({
       input$regenerar_sim_cor
@@ -332,9 +419,9 @@ mod_correlacion_server <- function(id) {
       r_obs <- stats::cor(df$x, df$y)
       tagList(
         tarjeta_metrica("r objetivo", round(input$r_objetivo_sim_cor, 2),
-                        "media"),
-        tarjeta_metrica("r observado (Pearson)", round(r_obs, 2), "media",
-                        ultima = TRUE)
+                        "r_correlacion"),
+        tarjeta_metrica("r observado (Pearson)", round(r_obs, 2),
+                        "r_correlacion", ultima = TRUE)
       )
     })
 
@@ -360,9 +447,12 @@ mod_correlacion_server <- function(id) {
           bs_icon("lightbulb-fill", class = "me-1"),
           paste0("Fuerza ", interpretar_fuerza_r(r_obs), " y direcci\u00f3n ",
                 if (r_obs > 0) "positiva" else "negativa", ". Nota que el ",
-                "r observado no es id\u00e9ntico al objetivo \u2014 hay ",
-                "variabilidad de muestreo, igual que con la media. Sube n ",
-                "para que se acerquen m\u00e1s.")
+                "r observado no es id\u00e9ntico al objetivo \u2014 r tambi\u00e9n es ",
+                "un estad\u00edstico calculado de una muestra, as\u00ed que tiene su ",
+                "propio error est\u00e1ndar y var\u00eda de muestra en muestra (el ",
+                "mismo concepto que ya viste con la media, aplicado ahora a ",
+                "r). Sube n para que el r observado se acerque m\u00e1s al ",
+                "objetivo.")
       )
     })
 
@@ -552,15 +642,15 @@ mod_correlacion_server <- function(id) {
       res <- resultado_practica_cor()
       tagList(
         tarjeta_metrica(paste0("r (", res$metodo, ")"), round(res$r, 3),
-                        "media"),
+                        "r_correlacion"),
         tarjeta_metrica("Valor p", format.pval(res$p_value, digits = 3),
-                        "media",
+                        "valor_p_cor",
                         ultima = is.null(res$li)),
         if (!is.null(res$li)) {
           tarjeta_metrica("IC 95% para r",
                           paste0("[", round(res$li, 2), ", ",
                                 round(res$ls, 2), "]"),
-                          "media", ultima = TRUE)
+                          "ic_r", ultima = TRUE)
         }
       )
     })
@@ -595,7 +685,9 @@ mod_correlacion_server <- function(id) {
                 if (res$r > 0) "positiva" else "negativa", " (r = ",
                 round(res$r, 3), "), ", sig, " (p = ",
                 format.pval(res$p_value, digits = 3), "). Recuerda: esto no ",
-                "implica que una variable ", em("cause"), " la otra.")
+                "implica que una variable "),
+          em("cause"),
+          " la otra."
       )
     })
 

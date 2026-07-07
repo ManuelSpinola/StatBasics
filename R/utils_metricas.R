@@ -26,7 +26,10 @@ descripciones_metricas <- list(
   se_teorico     = "EE = \u03c3/\u221an, usando la desviaci\u00f3n est\u00e1ndar POBLACIONAL real (conocida aqu\u00ed porque simulamos toda la poblaci\u00f3n) \u2014 lo que esperar\u00edas por f\u00f3rmula si conocieras \u03c3 con exactitud.",
   se_observado   = "La desviaci\u00f3n est\u00e1ndar de las medias que realmente se obtuvieron al simular \u2014 lo que se observa en la pr\u00e1ctica. Se acerca al esperado por f\u00f3rmula, pero no es id\u00e9ntico por variabilidad de Monte Carlo.",
   se_formula     = "Estimado con EE = s/\u221an, usando la desviaci\u00f3n est\u00e1ndar de TU MUESTRA (s) como aproximaci\u00f3n de la poblacional \u2014 con datos reales nunca conoces \u03c3 con certeza.",
-  se_bootstrap   = "Estimado remuestreando tus propios datos con reemplazo miles de veces y midiendo cu\u00e1nto var\u00edan esas medias \u2014 sin asumir ninguna f\u00f3rmula."
+  se_bootstrap   = "Estimado remuestreando tus propios datos con reemplazo miles de veces y midiendo cu\u00e1nto var\u00edan esas medias \u2014 sin asumir ninguna f\u00f3rmula.",
+  r_correlacion  = "Va de \u22121 (relaci\u00f3n negativa perfecta) a +1 (positiva perfecta); 0 = sin relaci\u00f3n lineal/mon\u00f3tona detectada.",
+  valor_p_cor    = "Probabilidad de observar una correlaci\u00f3n as\u00ed de fuerte (o m\u00e1s) si en realidad no hubiera relaci\u00f3n en la poblaci\u00f3n. Menor a 0.05 = estad\u00edsticamente significativa.",
+  ic_r           = "Rango de valores plausibles para la verdadera correlaci\u00f3n poblacional, con el nivel de confianza elegido (calculado v\u00eda transformaci\u00f3n z de Fisher)."
 )
 
 # ── Constructor de una tarjeta de métrica ───────────────────
