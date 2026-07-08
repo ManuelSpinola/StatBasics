@@ -305,9 +305,9 @@ mod_probabilidad_server <- function(id) {
       sim <- datos_sim_prob()
       tagList(
         tarjeta_metrica("Probabilidad te\u00f3rica", round(sim$p_teorica, 3),
-                        "r_correlacion"),
+                        "probabilidad_teorica"),
         tarjeta_metrica("Frecuencia relativa final",
-                        round(sim$frec_relativa[sim$n], 3), "r_correlacion",
+                        round(sim$frec_relativa[sim$n], 3), "frecuencia_relativa",
                         ultima = TRUE)
       )
     })
@@ -326,7 +326,7 @@ mod_probabilidad_server <- function(id) {
                  size = 3.5) +
         labs(x = "N\u00famero de lanzamientos", y = "Frecuencia relativa acumulada",
              title = "Ley de los grandes n\u00fameros") +
-        theme_minimal(base_size = 13) +
+        theme_light(base_size = 13) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$primario,
                                         face = "bold", size = 13))
@@ -406,7 +406,7 @@ mod_probabilidad_server <- function(id) {
       tagList(
         tarjeta_metrica("P(enfermo | positivo)",
                         paste0(round(100 * res$p_enfermo_dado_positivo, 1), "%"),
-                        "r_correlacion", ultima = TRUE)
+                        "prob_bayes_posterior", ultima = TRUE)
       )
     })
 
@@ -426,7 +426,7 @@ mod_probabilidad_server <- function(id) {
                                     colores$acento, colores$secundario)) +
         labs(x = NULL, y = paste0("Personas (de ", res$poblacion, ")"),
              title = "Desglose en frecuencias naturales") +
-        theme_minimal(base_size = 12) +
+        theme_light(base_size = 12) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$primario,
                                         face = "bold", size = 13))

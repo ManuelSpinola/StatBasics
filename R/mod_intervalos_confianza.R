@@ -481,7 +481,7 @@ mod_intervalos_confianza_server <- function(id) {
         labs(x = "Valor", y = "Muestra simulada",
              title = paste0("IC al ", round(conf * 100), "% \u2014 ",
                            input$reps_sim_ic, " muestras simuladas")) +
-        theme_minimal(base_size = 12) +
+        theme_light(base_size = 12) +
         theme(legend.position = "top",
               plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$primario,
@@ -691,7 +691,7 @@ mod_intervalos_confianza_server <- function(id) {
         labs(x = NULL, y = input$var_ic,
              title = paste0("Estimado e IC al ",
                            round(input$nivel_conf_ic * 100), "%")) +
-        theme_minimal(base_size = 13) +
+        theme_light(base_size = 13) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$primario,
                                         face = "bold", size = 13))

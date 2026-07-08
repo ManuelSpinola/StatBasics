@@ -69,6 +69,45 @@ mod_tamano_efecto_ui <- function(id) {
         )
       ),
 
+      nav_panel(title = tagList(bs_icon("sliders", class="me-1"), "Simulaci\u00f3n interactiva"),
+        card_body(
+          p(class="small text-muted mb-3",
+            "Fija una diferencia real entre dos grupos y despu\u00e9s sub\u00ed el ",
+            "tama\u00f1o de muestra. Vas a ver que el ", strong("Cohen's d NO ",
+            "cambia"), " (mide la magnitud real, que no toc\u00e1s), pero el ",
+            strong("valor p S\u00cd cambia"), " \u2014 una muestra m\u00e1s grande ",
+            "detecta la misma diferencia con m\u00e1s confianza."),
+          layout_columns(col_widths = c(4,8), fill = FALSE,
+            card(card_header(bs_icon("sliders", class="me-1"), "Par\u00e1metros"),
+              card_body(
+                h6(class = "text-muted mb-1", "Grupo 1 (ej.: machos)"),
+                sliderInput(ns("media_g1_sim_te"), "Media grupo 1:",
+                            min=150, max=200, value=175, step=1),
+                sliderInput(ns("sd_g1_sim_te"), "DE grupo 1:",
+                            min=2, max=30, value=15, step=1),
+                sliderInput(ns("n1_sim_te"), "n grupo 1:",
+                            min=5, max=200, value=30, step=5),
+                tags$hr(),
+                h6(class = "text-muted mb-1", "Grupo 2 (ej.: hembras)"),
+                sliderInput(ns("media_g2_sim_te"), "Media grupo 2:",
+                            min=150, max=200, value=180, step=1),
+                sliderInput(ns("sd_g2_sim_te"), "DE grupo 2:",
+                            min=2, max=30, value=15, step=1),
+                sliderInput(ns("n2_sim_te"), "n grupo 2:",
+                            min=5, max=200, value=30, step=5),
+                tags$hr(), uiOutput(ns("cards_sim_te"))
+              )),
+            div(plotOutput(ns("plot_sim_te"), height="380px"),
+                tags$hr(class = "mt-3 mb-2"),
+                h6(bs_icon("rulers", class = "me-1"),
+                   "Gr\u00e1fico de estimaci\u00f3n (Gardner-Altman)",
+                   style = paste0("color:", colores$primario, "; font-weight:600;")),
+                plotOutput(ns("plot_efecto_sim_te"), height="150px"),
+                uiOutput(ns("insight_sim_te")))
+          )
+        )
+      ),
+
       nav_panel(title = tagList(bs_icon("clipboard-data", class="me-1"), "Practica con datos reales"),
         card_body(
           p(class="small text-muted mb-3",
@@ -89,6 +128,11 @@ mod_tamano_efecto_ui <- function(id) {
                 tags$hr(), uiOutput(ns("cards_practica_te"))
               )),
             div(plotOutput(ns("plot_practica_te"), height="320px"),
+                tags$hr(class = "mt-3 mb-2"),
+                h6(bs_icon("rulers", class = "me-1"),
+                   "Gr\u00e1fico de estimaci\u00f3n (Gardner-Altman)",
+                   style = paste0("color:", colores$primario, "; font-weight:600;")),
+                plotOutput(ns("plot_efecto_practica_te"), height="150px"),
                 uiOutput(ns("insight_practica_te")))
           )
         )
@@ -115,6 +159,120 @@ mod_tamano_efecto_server <- function(id) {
         birthwt  = MASS::birthwt,
         salaries = carData::Salaries
       )
+    })
+
+    sim_te <- reactive({
+      m1 <- input$media_g1_sim_te
+      m2 <- input$media_g2_sim_te
+      s1 <- input$sd_g1_sim_te
+      s2 <- input$sd_g2_sim_te
+      n1 <- input$n1_sim_te
+      n2 <- input$n2_sim_te
+      req(m1, m2, s1, s2, n1, n2)
+
+      dif <- m2 - m1
+      sd_combinada <- sqrt(((n1-1)*s1^2 + (n2-1)*s2^2) / (n1+n2-2))
+      cohen_d <- dif / sd_combinada
+
+      se1 <- s1^2 / n1
+      se2 <- s2^2 / n2
+      se_dif <- sqrt(se1 + se2)
+      gl <- (se1 + se2)^2 / (se1^2/(n1-1) + se2^2/(n2-1))
+      t_obs <- dif / se_dif
+      p_valor <- 2 * stats::pt(-abs(t_obs), df = gl)
+      tc_dif <- stats::qt(0.975, df = gl)
+      dif_li <- dif - tc_dif * se_dif
+      dif_ls <- dif + tc_dif * se_dif
+
+      # IC de Cohen's d: aproximaci\u00f3n de Hedges & Olkin (1985)
+      se_d <- sqrt((n1 + n2) / (n1 * n2) + cohen_d^2 / (2 * (n1 + n2)))
+      d_li <- cohen_d - 1.96 * se_d
+      d_ls <- cohen_d + 1.96 * se_d
+
+      list(m1 = m1, m2 = m2, s1 = s1, s2 = s2, n1 = n1, n2 = n2,
+           dif = dif, dif_li = dif_li, dif_ls = dif_ls,
+           cohen_d = cohen_d, d_li = d_li, d_ls = d_ls,
+           t_obs = t_obs, p_valor = p_valor)
+    })
+
+    output$cards_sim_te <- renderUI({
+      s <- sim_te()
+      tagList(
+        tarjeta_metrica("Diferencia (no estandarizada)",
+                        paste0(round(s$dif, 2), "  [IC 95%: ", round(s$dif_li, 2),
+                              " a ", round(s$dif_ls, 2), "]"),
+                        "diferencia_efecto"),
+        tarjeta_metrica("Cohen's d (estandarizado)",
+                        paste0(round(s$cohen_d, 2), " (", interpretar_cohen_d(s$cohen_d),
+                              ")  [IC 95%: ", round(s$d_li, 2), " a ", round(s$d_ls, 2), "]"),
+                        "cohen_d"),
+        tarjeta_metrica("Valor p (referencia)",
+                        format.pval(s$p_valor, digits = 3), "valor_p_ref", ultima = TRUE)
+      )
+    })
+
+    output$plot_sim_te <- renderPlot({
+      s <- sim_te()
+      xmin <- min(s$m1 - 4*s$s1, s$m2 - 4*s$s2)
+      xmax <- max(s$m1 + 4*s$s1, s$m2 + 4*s$s2)
+      xs   <- seq(xmin, xmax, length.out = 500)
+      df   <- data.frame(
+        x     = rep(xs, 2),
+        y     = c(stats::dnorm(xs, s$m1, s$s1), stats::dnorm(xs, s$m2, s$s2)),
+        grupo = rep(c("Grupo 1", "Grupo 2"), each = length(xs))
+      )
+
+      ggplot(df, aes(x = x, y = y, color = grupo, fill = grupo)) +
+        geom_area(alpha = 0.35, position = "identity") +
+        geom_line(linewidth = 1) +
+        geom_vline(xintercept = s$m1, color = colores$primario, linewidth = 0.8) +
+        geom_vline(xintercept = s$m2, color = colores$acento,
+                  linetype = "dashed", linewidth = 1.1) +
+        scale_color_manual(values = c("Grupo 1" = colores$primario,
+                                      "Grupo 2" = colores$acento)) +
+        scale_fill_manual(values = c("Grupo 1" = colores$primario,
+                                     "Grupo 2" = colores$acento)) +
+        labs(x = "Valor", y = "Densidad", color = NULL, fill = NULL,
+             title = paste0("Cohen's d = ", round(s$cohen_d, 2), "  |  p = ",
+                           format.pval(s$p_valor, digits = 3))) +
+        theme_light(base_size = 13) +
+        theme(plot.background = element_rect(fill = colores$fondo, color = NA),
+              plot.title = element_text(color = colores$primario, face = "bold", size = 13),
+              legend.position = "top")
+    })
+
+    output$plot_efecto_sim_te <- renderPlot({
+      s <- sim_te()
+      color_ic <- if (s$dif_li > 0 || s$dif_ls < 0) colores$primario else "grey50"
+      lim <- max(abs(s$dif_li), abs(s$dif_ls), abs(s$dif), 1) * 1.3
+
+      ggplot(data.frame(x = s$dif, y = 0.5), aes(x = x, y = y)) +
+        geom_vline(xintercept = 0, linetype = "dashed", color = "grey40",
+                  linewidth = 0.7) +
+        geom_errorbarh(aes(xmin = s$dif_li, xmax = s$dif_ls), height = 0.15,
+                      color = color_ic, linewidth = 1.1) +
+        geom_point(size = 4, color = color_ic) +
+        scale_x_continuous(limits = c(-lim, lim)) +
+        scale_y_continuous(limits = c(0, 1), breaks = NULL) +
+        labs(x = "Diferencia (no estandarizada)", y = NULL,
+             title = "Diferencia e IC 95%") +
+        theme_light(base_size = 12) +
+        theme(plot.background = element_rect(fill = colores$fondo, color = NA),
+              plot.title = element_text(color = colores$primario, face = "bold", size = 11),
+              panel.grid.major.y = element_blank(),
+              panel.grid.minor = element_blank())
+    })
+
+    output$insight_sim_te <- renderUI({
+      s <- sim_te()
+      div(class = "alert alert-info small mt-2", bs_icon("lightbulb-fill", class="me-1"),
+          paste0("La diferencia real (", round(s$dif, 2), ", IC 95% [", round(s$dif_li, 2),
+                ", ", round(s$dif_ls, 2), "]) es lo que le importa a alguien tomando una ",
+                "decisi\u00f3n pr\u00e1ctica. Cohen's d (", round(s$cohen_d, 2), ", IC 95% [",
+                round(s$d_li, 2), ", ", round(s$d_ls, 2), "]) no depende de n1 ni n2 \u2014 ",
+                "solo de la diferencia y la variabilidad \u2014 pero su IC s\u00ed se angosta con ",
+                "n, igual que el de la diferencia. Prob\u00e1 subir n1 y n2 sin tocar las medias ",
+                "ni las DE: Cohen's d se queda igual, pero ambos IC se angostan y el valor p baja."))
     })
 
     output$sel_var_num_te <- renderUI({
@@ -144,35 +302,88 @@ mod_tamano_efecto_server <- function(id) {
       sd_combinada <- sqrt(((n1-1)*s1^2 + (n2-1)*s2^2) / (n1+n2-2))
       dif_no_estandarizada <- m2 - m1
       cohen_d <- dif_no_estandarizada / sd_combinada
-      list(d = d, m1 = m1, m2 = m2, dif = dif_no_estandarizada,
-           cohen_d = cohen_d, niveles = levels(d$grupo))
+
+      test <- stats::t.test(y ~ grupo, data = d)
+      dif_ic <- rev(-test$conf.int)  # conf.int viene como grupo1 - grupo2; invertimos
+
+      se_d <- sqrt((n1 + n2) / (n1 * n2) + cohen_d^2 / (2 * (n1 + n2)))
+      d_li <- cohen_d - 1.96 * se_d
+      d_ls <- cohen_d + 1.96 * se_d
+
+      resumen <- do.call(rbind, lapply(split(d, d$grupo), function(gr) {
+        n  <- nrow(gr)
+        m  <- mean(gr$y)
+        se <- stats::sd(gr$y) / sqrt(n)
+        tc <- stats::qt(0.975, df = n - 1)
+        data.frame(grupo = gr$grupo[1], media = m, se = se,
+                  li = m - tc * se, ls = m + tc * se, n = n)
+      }))
+
+      list(d = d, resumen = resumen, m1 = m1, m2 = m2, dif = dif_no_estandarizada,
+           dif_li = dif_ic[1], dif_ls = dif_ic[2],
+           cohen_d = cohen_d, d_li = d_li, d_ls = d_ls,
+           niveles = levels(d$grupo))
     })
 
     output$cards_practica_te <- renderUI({
       req(resultado_te())
       r <- resultado_te()
       tagList(
+        tarjeta_metrica(paste0("Media ", r$niveles[1]), round(r$m1, 2), "media"),
+        tarjeta_metrica(paste0("Media ", r$niveles[2]), round(r$m2, 2), "media"),
         tarjeta_metrica("Diferencia (no estandarizada)",
-                        paste0(round(r$dif, 2), " ", input$var_num_te), "media"),
+                        paste0(round(r$dif, 2), " ", input$var_num_te,
+                              "  [IC 95%: ", round(r$dif_li, 2), " a ",
+                              round(r$dif_ls, 2), "]"),
+                        "diferencia_efecto"),
         tarjeta_metrica("Cohen's d (estandarizado)",
                         paste0(round(r$cohen_d, 2), " (",
-                              interpretar_cohen_d(r$cohen_d), ")"),
-                        "media", ultima = TRUE)
+                              interpretar_cohen_d(r$cohen_d),
+                              ")  [IC 95%: ", round(r$d_li, 2), " a ",
+                              round(r$d_ls, 2), "]"),
+                        "cohen_d", ultima = TRUE)
       )
     })
 
     output$plot_practica_te <- renderPlot({
       req(resultado_te())
       r <- resultado_te()
-      ggplot(r$d, aes(x = grupo, y = y, fill = grupo)) +
-        geom_boxplot(show.legend = FALSE, alpha = 0.8) +
-        scale_fill_manual(values = c(colores$primario, colores$acento)) +
-        labs(x = NULL, y = input$var_num_te,
+      ggplot(r$resumen, aes(x = grupo, y = media, color = grupo)) +
+        geom_errorbar(aes(ymin = li, ymax = ls), width = 0.15, linewidth = 1) +
+        geom_point(size = 4) +
+        scale_color_manual(values = c(colores$primario, colores$acento)) +
+        labs(x = NULL, y = paste0("Media de ", input$var_num_te),
              title = paste0("Diferencia = ", round(r$dif, 2), " | Cohen's d = ",
-                           round(r$cohen_d, 2))) +
-        theme_minimal(base_size = 13) +
+                           round(r$cohen_d, 2)),
+             subtitle = "Puntos = media, barras = IC 95%") +
+        theme_light(base_size = 13) +
+        theme(legend.position = "none",
+              plot.background = element_rect(fill = colores$fondo, color = NA),
+              plot.title = element_text(color = colores$primario, face = "bold", size = 13),
+              plot.subtitle = element_text(color = "grey40", size = 10.5))
+    })
+
+    output$plot_efecto_practica_te <- renderPlot({
+      req(resultado_te())
+      r <- resultado_te()
+      color_ic <- if (r$dif_li > 0 || r$dif_ls < 0) colores$primario else "grey50"
+      lim <- max(abs(r$dif_li), abs(r$dif_ls), abs(r$dif), 1) * 1.3
+
+      ggplot(data.frame(x = r$dif, y = 0.5), aes(x = x, y = y)) +
+        geom_vline(xintercept = 0, linetype = "dashed", color = "grey40",
+                  linewidth = 0.7) +
+        geom_errorbarh(aes(xmin = r$dif_li, xmax = r$dif_ls), height = 0.15,
+                      color = color_ic, linewidth = 1.1) +
+        geom_point(size = 4, color = color_ic) +
+        scale_x_continuous(limits = c(-lim, lim)) +
+        scale_y_continuous(limits = c(0, 1), breaks = NULL) +
+        labs(x = paste0("Diferencia (", input$var_num_te, ")"), y = NULL,
+             title = "Diferencia e IC 95%") +
+        theme_light(base_size = 12) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
-              plot.title = element_text(color = colores$primario, face = "bold", size = 13))
+              plot.title = element_text(color = colores$primario, face = "bold", size = 11),
+              panel.grid.major.y = element_blank(),
+              panel.grid.minor = element_blank())
     })
 
     output$insight_practica_te <- renderUI({
@@ -180,9 +391,11 @@ mod_tamano_efecto_server <- function(id) {
       r <- resultado_te()
       div(class = "alert alert-info small mt-2", bs_icon("lightbulb-fill", class="me-1"),
           paste0("La diferencia real es ", round(r$dif,2), " ", input$var_num_te,
-                " entre '", r$niveles[2], "' y '", r$niveles[1], "' \u2014 eso es lo ",
+                " (IC 95%: ", round(r$dif_li,2), " a ", round(r$dif_ls,2),
+                ") entre '", r$niveles[2], "' y '", r$niveles[1], "' \u2014 eso es lo ",
                 "que le importa a alguien tomando una decisi\u00f3n pr\u00e1ctica. El Cohen's d (",
-                round(r$cohen_d,2), ") dice que esa diferencia es de tama\u00f1o ",
+                round(r$cohen_d,2), ", IC 95%: ", round(r$d_li,2), " a ", round(r$d_ls,2),
+                ") dice que esa diferencia es de tama\u00f1o ",
                 interpretar_cohen_d(r$cohen_d), " en t\u00e9rminos de desviaciones est\u00e1ndar ",
                 "\u2014 \u00fatil para comparar con otros estudios, pero por s\u00ed solo no te dice ",
                 "nada sobre las unidades reales."))

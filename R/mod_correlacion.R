@@ -347,7 +347,7 @@ mod_correlacion_server <- function(id) {
     # usado en Error Est\u00e1ndar) para evitar problemas de tama\u00f1o
     # de dispositivo gr\u00e1fico con paneles combinados.
     tema_mini_cor <- function() {
-      theme_minimal(base_size = 10) +
+      theme_light(base_size = 10) +
         theme(axis.text = element_blank(), axis.title = element_blank(),
               axis.ticks = element_blank(),
               plot.title = element_text(face = "bold", size = 10,
@@ -434,7 +434,7 @@ mod_correlacion_server <- function(id) {
         labs(x = "Variable X", y = "Variable Y",
              title = paste0("r observado = ",
                            round(stats::cor(df$x, df$y), 2))) +
-        theme_minimal(base_size = 13) +
+        theme_light(base_size = 13) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$primario,
                                         face = "bold", size = 13))
@@ -668,7 +668,7 @@ mod_correlacion_server <- function(id) {
       p +
         labs(x = input$var_x_cor, y = input$var_y_cor,
              title = paste0("r = ", round(res$r, 3), " (", res$metodo, ")")) +
-        theme_minimal(base_size = 13) +
+        theme_light(base_size = 13) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$primario,
                                         face = "bold", size = 13))

@@ -411,7 +411,7 @@ mod_dispersion_server <- function(id) {
         geom_jitter(width = 0.1, alpha = 0.4, color = colores$texto, size = 1.3) +
         coord_flip() +
         labs(x = NULL, y = "Valor simulado") +
-        theme_minimal(base_size = 13) +
+        theme_light(base_size = 13) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               axis.text.y = element_blank())
     })
@@ -699,7 +699,7 @@ mod_dispersion_server <- function(id) {
         geom_jitter(width = 0.1, alpha = 0.4, color = colores$texto, size = 1.3) +
         coord_flip() +
         labs(x = NULL, y = input$var_disp) +
-        theme_minimal(base_size = 13) +
+        theme_light(base_size = 13) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               axis.text.y = element_blank())
     })

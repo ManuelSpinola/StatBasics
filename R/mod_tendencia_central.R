@@ -461,7 +461,7 @@ mod_tendencia_central_server <- function(id) {
         annotate("text", x = e$moda, y = Inf, label = "Moda", vjust = 6,
                 color = colores$peligro, fontface = "bold", size = 3.5) +
         labs(x = "Valor simulado", y = "Densidad") +
-        theme_minimal(base_size = 13) +
+        theme_light(base_size = 13) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA))
     })
 
@@ -772,7 +772,7 @@ mod_tendencia_central_server <- function(id) {
         annotate("text", x = e$moda, y = Inf, label = "Moda", vjust = 6,
                 color = colores$peligro, fontface = "bold", size = 3.5) +
         labs(x = input$var_tc, y = "Densidad") +
-        theme_minimal(base_size = 13) +
+        theme_light(base_size = 13) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA))
     })
 

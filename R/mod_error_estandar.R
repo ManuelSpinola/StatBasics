@@ -527,7 +527,7 @@ mod_error_estandar_server <- function(id) {
         scale_color_manual(values = c(colores$primario, colores$acento),
                           name = NULL) +
         labs(x = "Tama\u00f1o de muestra (n)", y = NULL) +
-        theme_minimal(base_size = 11) +
+        theme_light(base_size = 11) +
         theme(legend.position = "top",
               plot.background = element_rect(fill = colores$fondo, color = NA))
     }, width = 480, height = 220, res = 96)
@@ -546,7 +546,7 @@ mod_error_estandar_server <- function(id) {
                        alpha = 0.9) +
         labs(x = "Peso (g)", y = "Frecuencia",
              title = "Pesos individuales (30 vampiros)") +
-        theme_minimal(base_size = 13) +
+        theme_light(base_size = 13) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$primario,
                                         face = "bold", size = 12))
@@ -562,7 +562,7 @@ mod_error_estandar_server <- function(id) {
                        alpha = 0.9) +
         labs(x = "Peso (g)", y = "Frecuencia",
              title = "Medias de 300 muestras (n=10 c/u)") +
-        theme_minimal(base_size = 13) +
+        theme_light(base_size = 13) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$acento,
                                         face = "bold", size = 12))
@@ -822,7 +822,7 @@ mod_error_estandar_server <- function(id) {
              title = paste0("Distribuci\u00f3n muestral de la media (n = ",
                            input$n_muestra_sim_ee, ", N = ",
                            length(pob), ")")) +
-        theme_minimal(base_size = 13) +
+        theme_light(base_size = 13) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$primario,
                                         face = "bold", size = 13))
@@ -1094,7 +1094,7 @@ mod_error_estandar_server <- function(id) {
         labs(x = paste0("Media de cada remuestreo (n = ", r$n, ")"),
              y = "Densidad",
              title = "Distribuci\u00f3n bootstrap de la media") +
-        theme_minimal(base_size = 13) +
+        theme_light(base_size = 13) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$primario,
                                         face = "bold", size = 13))

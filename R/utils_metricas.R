@@ -29,7 +29,13 @@ descripciones_metricas <- list(
   se_bootstrap   = "Estimado remuestreando tus propios datos con reemplazo miles de veces y midiendo cu\u00e1nto var\u00edan esas medias \u2014 sin asumir ninguna f\u00f3rmula.",
   r_correlacion  = "Va de \u22121 (relaci\u00f3n negativa perfecta) a +1 (positiva perfecta); 0 = sin relaci\u00f3n lineal/mon\u00f3tona detectada.",
   valor_p_cor    = "Probabilidad de observar una correlaci\u00f3n as\u00ed de fuerte (o m\u00e1s) si en realidad no hubiera relaci\u00f3n en la poblaci\u00f3n. Menor a 0.05 = estad\u00edsticamente significativa.",
-  ic_r           = "Rango de valores plausibles para la verdadera correlaci\u00f3n poblacional, con el nivel de confianza elegido (calculado v\u00eda transformaci\u00f3n z de Fisher)."
+  ic_r           = "Rango de valores plausibles para la verdadera correlaci\u00f3n poblacional, con el nivel de confianza elegido (calculado v\u00eda transformaci\u00f3n z de Fisher).",
+  diferencia_efecto = "Diferencia entre las medias en las unidades originales; el intervalo de confianza indica el rango plausible de esa diferencia real.",
+  cohen_d        = "Diferencia estandarizada en desviaciones est\u00e1ndar; permite comparar con otros estudios, pero pierde el significado de las unidades originales.",
+  valor_p_ref    = "Probabilidad de un resultado tan extremo o m\u00e1s, asumiendo que no hay diferencia real; mostrado aqu\u00ed solo como referencia.",
+  probabilidad_teorica = "Probabilidad calculada seg\u00fan la regla matem\u00e1tica del experimento (ej. 0.5 para una moneda justa); no depende de ninguna simulaci\u00f3n.",
+  frecuencia_relativa  = "Proporci\u00f3n de veces que ocurri\u00f3 el evento en la simulaci\u00f3n; converge a la probabilidad te\u00f3rica a medida que aumentan los ensayos (ley de los grandes n\u00fameros).",
+  prob_bayes_posterior = "Probabilidad actualizada despu\u00e9s de ver la evidencia (el 'posterior' del Teorema de Bayes), combinando el prior con la sensibilidad y especificidad del test."
 )
 
 # ── Constructor de una tarjeta de métrica ───────────────────

@@ -488,7 +488,7 @@ mod_distribuciones_server <- function(id) {
 
       p + labs(x = "Valor", y = if (d$discreta) "Proporci\u00f3n" else "Densidad",
                title = paste0("Distribuci\u00f3n ", fam)) +
-        theme_minimal(base_size = 13) +
+        theme_light(base_size = 13) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$primario,
                                         face = "bold", size = 13))
@@ -855,7 +855,7 @@ mod_distribuciones_server <- function(id) {
         fitdistrplus::denscomp(fits, legendtext = names(fits),
                               plotstyle = "ggplot") +
           ggplot2::labs(title = "Densidad observada vs. ajustada") +
-          theme_minimal(base_size = 12) +
+          theme_light(base_size = 12) +
           theme(plot.background = element_rect(fill = colores$fondo, color = NA))
       }, error = function(e) {
         ggplot() + annotate("text", x = 0, y = 0,
@@ -872,7 +872,7 @@ mod_distribuciones_server <- function(id) {
         fitdistrplus::qqcomp(fits, legendtext = names(fits),
                              plotstyle = "ggplot") +
           ggplot2::labs(title = "Gr\u00e1fico Q-Q") +
-          theme_minimal(base_size = 12) +
+          theme_light(base_size = 12) +
           theme(plot.background = element_rect(fill = colores$fondo, color = NA))
       }, error = function(e) {
         ggplot() + annotate("text", x = 0, y = 0,
