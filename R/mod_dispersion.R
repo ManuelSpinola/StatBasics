@@ -20,21 +20,6 @@ mod_dispersion_ui <- function(id) {
 
   tagList(
 
-    div(
-      class = "py-3 px-2",
-      h4(
-        bs_icon("arrows-expand", class = "me-2"),
-        "Dispersi\u00f3n",
-        style = paste0("color:", colores$primario, "; font-weight:700;")
-      ),
-      p(
-        class = "text-muted mb-0",
-        "La tendencia central sola puede enga\u00f1ar: dos grupos pueden ",
-        "tener la misma media y ser radicalmente distintos en qu\u00e9 tan ",
-        strong("dispersos"), " o \"esparcidos\" est\u00e1n sus datos."
-      )
-    ),
-
     navset_card_tab(
 
       # ════════════════════════════════════════════════
@@ -47,10 +32,11 @@ mod_dispersion_ui <- function(id) {
           h5(style = paste0("color:", colores$primario, "; font-weight:700;"),
              "Medidas de dispersi\u00f3n"),
           p(class = "small text-muted mb-3",
-            "Cuantifican qu\u00e9 tan alejados est\u00e1n los datos entre s\u00ed y de su ",
-            "centro. Sin ellas, dos conjuntos de datos con la misma media ",
-            "pueden parecer id\u00e9nticos cuando en realidad uno es mucho m\u00e1s ",
-            "variable que el otro."
+            "La tendencia central sola puede enga\u00f1ar: dos grupos pueden ",
+            "tener la misma media y ser radicalmente distintos en qu\u00e9 tan ",
+            strong("dispersos"), " o \"esparcidos\" est\u00e1n sus datos. Las ",
+            "medidas de dispersi\u00f3n cuantifican qu\u00e9 tan alejados est\u00e1n ",
+            "los datos entre s\u00ed y de su centro."
           ),
 
           div(
