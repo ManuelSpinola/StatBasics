@@ -13,7 +13,7 @@ mod_describiendo_datos_ui <- function(id) {
 
   tagList(
     div(
-      class = "py-3 px-2",
+      class = "py-3 px-2 modulo-header",
       h4(
         bs_icon("bar-chart-steps", class = "me-2"),
         "Describiendo los datos",

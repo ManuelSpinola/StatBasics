@@ -85,6 +85,15 @@ tema_app <- bslib::bs_theme(
                    font-family: 'Fira Code', monospace;
                    font-size: 0.82rem; line-height: 1.7;
                    overflow-x: auto; white-space: pre; }
+
+  /* Compactar encabezado de módulo y tabs anidados en pantallas bajas */
+  @media (max-height: 950px) {
+    .modulo-header { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
+    .modulo-header h4 { font-size: 1.15rem !important; margin-bottom: 0.25rem !important; }
+    .modulo-header p  { font-size: 0.85rem !important; }
+    .card > .card-header { padding-top: 0.4rem !important; padding-bottom: 0.4rem !important; }
+    .nav-tabs .nav-link  { padding-top: 0.4rem !important; padding-bottom: 0.4rem !important; }
+  }
 ")
 
 # ── Escalas ggplot2 (Tableau Color Blind) ──────────────────
