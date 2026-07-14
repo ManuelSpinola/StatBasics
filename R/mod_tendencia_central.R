@@ -42,22 +42,6 @@ mod_tendencia_central_ui <- function(id) {
 
   tagList(
 
-    div(
-      class = "py-3 px-2",
-      h4(
-        bs_icon("bar-chart", class = "me-2"),
-        "Tendencia central",
-        style = paste0("color:", colores$primario, "; font-weight:700;")
-      ),
-      p(
-        class = "text-muted mb-0",
-        "Media, mediana y moda responden a la misma pregunta \u2014 ",
-        strong("\u00bfd\u00f3nde se concentran los datos?"),
-        " \u2014 pero cada una lo hace de forma distinta. Elegir la ",
-        "medida correcta depende de la forma de la distribuci\u00f3n."
-      )
-    ),
-
     navset_card_tab(
 
       # ════════════════════════════════════════════════
@@ -70,7 +54,10 @@ mod_tendencia_central_ui <- function(id) {
           h5(style = paste0("color:", colores$primario, "; font-weight:700;"),
              "Medidas de tendencia central"),
           p(class = "small text-muted mb-3",
-            "Resumen el valor \"t\u00edpico\" o central de un conjunto de datos."
+            "Media, mediana y moda responden a la misma pregunta \u2014 ",
+            strong("\u00bfd\u00f3nde se concentran los datos?"),
+            " \u2014 pero cada una lo hace de forma distinta. Elegir la ",
+            "medida correcta depende de la forma de la distribuci\u00f3n."
           ),
 
           div(

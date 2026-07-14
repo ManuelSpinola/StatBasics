@@ -85,31 +85,6 @@ tema_app <- bslib::bs_theme(
                    font-family: 'Fira Code', monospace;
                    font-size: 0.82rem; line-height: 1.7;
                    overflow-x: auto; white-space: pre; }
-
-  /* Encabezado de módulo y tabs anidados: escalan con la altura del
-     viewport en vez de depender de un umbral fijo (@media). clamp(min, preferido, max)
-     evita saltos bruscos y se adapta a cualquier pantalla, desde MacBook
-     hasta Studio Display, sin necesidad de recalibrar un número magico. */
-  .modulo-header {
-    padding-top: clamp(0.4rem, 1.8vh, 1rem) !important;
-    padding-bottom: clamp(0.4rem, 1.8vh, 1rem) !important;
-  }
-  .modulo-header h4 {
-    font-size: clamp(1.05rem, calc(2vh + 0.6rem), 1.5rem) !important;
-    margin-bottom: clamp(0.15rem, 0.6vh, 0.5rem) !important;
-  }
-  .modulo-header p {
-    font-size: clamp(0.8rem, calc(1.4vh + 0.3rem), 1rem) !important;
-    margin-bottom: 0 !important;
-  }
-  .card > .card-header {
-    padding-top: clamp(0.35rem, 1.2vh, 0.75rem) !important;
-    padding-bottom: clamp(0.35rem, 1.2vh, 0.75rem) !important;
-  }
-  .nav-tabs .nav-link {
-    padding-top: clamp(0.35rem, 1.2vh, 0.75rem) !important;
-    padding-bottom: clamp(0.35rem, 1.2vh, 0.75rem) !important;
-  }
 ")
 
 # ── Escalas ggplot2 (Tableau Color Blind) ──────────────────
