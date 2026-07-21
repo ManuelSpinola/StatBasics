@@ -370,14 +370,14 @@ mod_error_estandar_ui <- function(id) {
                             min = 100, max = 5000, value = 1000, step = 100),
                 actionButton(ns("regenerar_sim_ee"), "Nueva poblaci\u00f3n",
                              class = "btn-outline-secondary w-100 btn-sm",
-                             icon  = icon("shuffle")),
-                tags$hr(),
-                uiOutput(ns("cards_sim_ee"))
+                             icon  = icon("shuffle"))
               )
             ),
             div(
               plotOutput(ns("plot_sim_ee"), height = "380px"),
-              uiOutput(ns("insight_sim_ee"))
+              uiOutput(ns("insight_sim_ee")),
+              tags$hr(),
+              uiOutput(ns("cards_sim_ee"))
             )
           )
         )
@@ -507,14 +507,14 @@ mod_error_estandar_ui <- function(id) {
                             min = 100, max = 5000, value = 1000, step = 100),
                 actionButton(ns("calcular_ee"), "Calcular",
                              class = "btn-primary w-100 btn-sm",
-                             icon  = icon("play")),
-                tags$hr(),
-                uiOutput(ns("cards_practica_ee"))
+                             icon  = icon("play"))
               )
             ),
             div(
               plotOutput(ns("plot_practica_ee"), height = "380px"),
-              uiOutput(ns("insight_practica_ee"))
+              uiOutput(ns("insight_practica_ee")),
+              tags$hr(),
+              uiOutput(ns("cards_practica_ee"))
             )
           )
         )
@@ -559,7 +559,7 @@ mod_error_estandar_server <- function(id) {
         scale_color_manual(values = c(colores$primario, colores$acento),
                           name = NULL) +
         labs(x = "Tama\u00f1o de muestra (n)", y = NULL) +
-        theme_light(base_size = 11) +
+        theme_light(base_size = 15) +
         theme(legend.position = "top",
               plot.background = element_rect(fill = colores$fondo, color = NA))
     }, width = 480, height = 220, res = 96)
@@ -578,10 +578,10 @@ mod_error_estandar_server <- function(id) {
                        alpha = 0.9) +
         labs(x = "Peso (g)", y = "Frecuencia",
              title = "Pesos individuales (30 vampiros)") +
-        theme_light(base_size = 13) +
+        theme_light(base_size = 17) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$primario,
-                                        face = "bold", size = 12))
+                                        face = "bold", size = 16))
     })
 
     output$plot_de_vs_ee_medias <- renderPlot({
@@ -594,10 +594,10 @@ mod_error_estandar_server <- function(id) {
                        alpha = 0.9) +
         labs(x = "Peso (g)", y = "Frecuencia",
              title = "Medias de 300 muestras (n=10 c/u)") +
-        theme_light(base_size = 13) +
+        theme_light(base_size = 17) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$acento,
-                                        face = "bold", size = 12))
+                                        face = "bold", size = 16))
     })
 
 
@@ -849,15 +849,15 @@ mod_error_estandar_server <- function(id) {
                   linewidth = 1, linetype = "dashed") +
         annotate("text", x = mean(pob), y = Inf,
                  label = "Media poblacional", vjust = 2,
-                 color = colores$peligro, fontface = "bold", size = 3.5) +
+                 color = colores$peligro, fontface = "bold", size = 4.3) +
         labs(x = "Media de cada muestra", y = "Densidad",
              title = paste0("Distribuci\u00f3n muestral de la media (n = ",
                            input$n_muestra_sim_ee, ", N = ",
                            length(pob), ")")) +
-        theme_light(base_size = 13) +
+        theme_light(base_size = 17) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$primario,
-                                        face = "bold", size = 13))
+                                        face = "bold", size = 17))
     })
 
     output$insight_sim_ee <- renderUI({
@@ -1159,7 +1159,7 @@ mod_error_estandar_server <- function(id) {
                   linetype = "dotted") +
         annotate("text", x = r$media_muestra, y = Inf, label = "Media",
                  vjust = 2, color = colores$primario, fontface = "bold",
-                 size = 3.5) +
+                 size = 4.3) +
         annotate("text", x = r$media_muestra + r$se_formula, y = Inf,
                  label = "\u00b1EE f\u00f3rmula", vjust = 4,
                  color = colores$acento, fontface = "bold", size = 3) +
@@ -1169,10 +1169,10 @@ mod_error_estandar_server <- function(id) {
         labs(x = paste0("Media de cada remuestreo (n = ", r$n, ")"),
              y = "Densidad",
              title = "Distribuci\u00f3n bootstrap de la media") +
-        theme_light(base_size = 13) +
+        theme_light(base_size = 17) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$primario,
-                                        face = "bold", size = 13))
+                                        face = "bold", size = 17))
     })
 
     output$insight_practica_ee <- renderUI({

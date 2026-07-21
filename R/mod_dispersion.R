@@ -156,14 +156,14 @@ mod_dispersion_ui <- function(id) {
                 actionButton(ns("regenerar_sim_disp"),
                              "Nueva muestra aleatoria",
                              class = "btn-outline-secondary w-100 btn-sm",
-                             icon  = icon("shuffle")),
-                tags$hr(),
-                uiOutput(ns("cards_sim_disp"))
+                             icon  = icon("shuffle"))
               )
             ),
             div(
               plotOutput(ns("plot_sim_disp"), height = "380px"),
-              uiOutput(ns("insight_sim_disp"))
+              uiOutput(ns("insight_sim_disp")),
+              tags$hr(),
+              uiOutput(ns("cards_sim_disp"))
             )
           )
         )
@@ -308,14 +308,14 @@ mod_dispersion_ui <- function(id) {
                   ns = ns,
                   numericInput(ns("valor_outlier_disp"), "Valor del outlier:",
                                value = 0)
-                ),
-                tags$hr(),
-                uiOutput(ns("cards_estadisticos_disp"))
+                )
               )
             ),
             div(
               plotOutput(ns("plot_boxplot_disp"), height = "380px"),
-              uiOutput(ns("insight_disp"))
+              uiOutput(ns("insight_disp")),
+              tags$hr(),
+              uiOutput(ns("cards_estadisticos_disp"))
             )
           )
         )
@@ -397,7 +397,7 @@ mod_dispersion_server <- function(id) {
         geom_jitter(width = 0.1, alpha = 0.4, color = colores$texto, size = 1.3) +
         coord_flip() +
         labs(x = NULL, y = "Valor simulado") +
-        theme_light(base_size = 13) +
+        theme_light(base_size = 17) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               axis.text.y = element_blank())
     })
@@ -685,7 +685,7 @@ mod_dispersion_server <- function(id) {
         geom_jitter(width = 0.1, alpha = 0.4, color = colores$texto, size = 1.3) +
         coord_flip() +
         labs(x = NULL, y = input$var_disp) +
-        theme_light(base_size = 13) +
+        theme_light(base_size = 17) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               axis.text.y = element_blank())
     })

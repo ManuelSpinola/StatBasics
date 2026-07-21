@@ -205,14 +205,14 @@ mod_correlacion_ui <- function(id) {
                             min = 10, max = 500, value = 100, step = 10),
                 actionButton(ns("regenerar_sim_cor"), "Nueva muestra aleatoria",
                              class = "btn-outline-secondary w-100 btn-sm",
-                             icon  = icon("shuffle")),
-                tags$hr(),
-                uiOutput(ns("cards_sim_cor"))
+                             icon  = icon("shuffle"))
               )
             ),
             div(
               plotOutput(ns("plot_sim_cor"), height = "400px"),
-              uiOutput(ns("insight_sim_cor"))
+              uiOutput(ns("insight_sim_cor")),
+              tags$hr(),
+              uiOutput(ns("cards_sim_cor"))
             )
           )
         )
@@ -337,14 +337,14 @@ mod_correlacion_ui <- function(id) {
                              selected = "pearson"),
                 actionButton(ns("calcular_cor"), "Calcular correlaci\u00f3n",
                              class = "btn-primary w-100 btn-sm",
-                             icon  = icon("play")),
-                tags$hr(),
-                uiOutput(ns("cards_practica_cor"))
+                             icon  = icon("play"))
               )
             ),
             div(
               plotOutput(ns("plot_practica_cor"), height = "380px"),
-              uiOutput(ns("insight_practica_cor"))
+              uiOutput(ns("insight_practica_cor")),
+              tags$hr(),
+              uiOutput(ns("cards_practica_cor"))
             )
           )
         )
@@ -379,10 +379,10 @@ mod_correlacion_server <- function(id) {
     # usado en Error Est\u00e1ndar) para evitar problemas de tama\u00f1o
     # de dispositivo gr\u00e1fico con paneles combinados.
     tema_mini_cor <- function() {
-      theme_light(base_size = 10) +
+      theme_light(base_size = 14) +
         theme(axis.text = element_blank(), axis.title = element_blank(),
               axis.ticks = element_blank(),
-              plot.title = element_text(face = "bold", size = 10,
+              plot.title = element_text(face = "bold", size = 14,
                                         color = colores$primario, hjust = 0.5),
               plot.background = element_rect(fill = colores$fondo, color = NA),
               panel.grid = element_blank())
@@ -466,10 +466,10 @@ mod_correlacion_server <- function(id) {
         labs(x = "Variable X", y = "Variable Y",
              title = paste0("r observado = ",
                            round(stats::cor(df$x, df$y), 2))) +
-        theme_light(base_size = 13) +
+        theme_light(base_size = 17) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$primario,
-                                        face = "bold", size = 13))
+                                        face = "bold", size = 17))
     })
 
     output$insight_sim_cor <- renderUI({
@@ -743,10 +743,10 @@ mod_correlacion_server <- function(id) {
       p +
         labs(x = input$var_x_cor, y = input$var_y_cor,
              title = paste0("r = ", round(res$r, 3), " (", res$metodo, ")")) +
-        theme_light(base_size = 13) +
+        theme_light(base_size = 17) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$primario,
-                                        face = "bold", size = 13))
+                                        face = "bold", size = 17))
     })
 
     output$insight_practica_cor <- renderUI({

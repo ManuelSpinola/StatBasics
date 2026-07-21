@@ -144,14 +144,14 @@ mod_probabilidad_ui <- function(id) {
                             min = 10, max = 5000, value = 500, step = 10),
                 actionButton(ns("regenerar_sim_prob"), "Nueva simulaci\u00f3n",
                              class = "btn-outline-secondary w-100 btn-sm",
-                             icon  = icon("shuffle")),
-                tags$hr(),
-                uiOutput(ns("cards_sim_prob"))
+                             icon  = icon("shuffle"))
               )
             ),
             div(
               plotOutput(ns("plot_sim_prob"), height = "380px"),
-              uiOutput(ns("insight_sim_prob"))
+              uiOutput(ns("insight_sim_prob")),
+              tags$hr(),
+              uiOutput(ns("cards_sim_prob"))
             )
           )
         )
@@ -246,14 +246,14 @@ mod_probabilidad_ui <- function(id) {
                 sliderInput(ns("sensibilidad_calc"), "Sensibilidad:",
                             min = 0.5, max = 0.999, value = 0.99, step = 0.001),
                 sliderInput(ns("especificidad_calc"), "Especificidad:",
-                            min = 0.5, max = 0.999, value = 0.95, step = 0.001),
-                tags$hr(),
-                uiOutput(ns("cards_calc_bayes"))
+                            min = 0.5, max = 0.999, value = 0.95, step = 0.001)
               )
             ),
             div(
               plotOutput(ns("plot_calc_bayes"), height = "300px"),
-              uiOutput(ns("insight_calc_bayes"))
+              uiOutput(ns("insight_calc_bayes")),
+              tags$hr(),
+              uiOutput(ns("cards_calc_bayes"))
             )
           )
         )
@@ -323,13 +323,13 @@ mod_probabilidad_server <- function(id) {
         annotate("text", x = sim$n * 0.85, y = sim$p_teorica,
                  label = paste0("P te\u00f3rica = ", round(sim$p_teorica, 3)),
                  vjust = -1, color = colores$peligro, fontface = "bold",
-                 size = 3.5) +
+                 size = 4.3) +
         labs(x = "N\u00famero de lanzamientos", y = "Frecuencia relativa acumulada",
              title = "Ley de los grandes n\u00fameros") +
-        theme_light(base_size = 13) +
+        theme_light(base_size = 17) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$primario,
-                                        face = "bold", size = 13))
+                                        face = "bold", size = 17))
     })
 
     output$insight_sim_prob <- renderUI({
@@ -426,10 +426,10 @@ mod_probabilidad_server <- function(id) {
                                     colores$acento, colores$secundario)) +
         labs(x = NULL, y = paste0("Personas (de ", res$poblacion, ")"),
              title = "Desglose en frecuencias naturales") +
-        theme_light(base_size = 12) +
+        theme_light(base_size = 16) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$primario,
-                                        face = "bold", size = 13))
+                                        face = "bold", size = 17))
     })
 
     output$insight_calc_bayes <- renderUI({

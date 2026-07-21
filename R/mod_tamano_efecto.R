@@ -94,8 +94,7 @@ mod_tamano_efecto_ui <- function(id) {
                 sliderInput(ns("sd_g2_sim_te"), "DE grupo 2:",
                             min=2, max=30, value=15, step=1),
                 sliderInput(ns("n2_sim_te"), "n grupo 2:",
-                            min=5, max=200, value=30, step=5),
-                tags$hr(), uiOutput(ns("cards_sim_te"))
+                            min=5, max=200, value=30, step=5)
               )),
             div(plotOutput(ns("plot_sim_te"), height="380px"),
                 tags$hr(class = "mt-3 mb-2"),
@@ -103,7 +102,8 @@ mod_tamano_efecto_ui <- function(id) {
                    "Gr\u00e1fico de estimaci\u00f3n (Gardner-Altman)",
                    style = paste0("color:", colores$primario, "; font-weight:600;")),
                 plotOutput(ns("plot_efecto_sim_te"), height="150px"),
-                uiOutput(ns("insight_sim_te")))
+                uiOutput(ns("insight_sim_te")),
+                tags$hr(), uiOutput(ns("cards_sim_te")))
           )
         )
       ),
@@ -124,8 +124,7 @@ mod_tamano_efecto_ui <- function(id) {
                 uiOutput(ns("sel_var_num_te")),
                 uiOutput(ns("sel_var_grupo_te")),
                 actionButton(ns("calcular_te"), "Calcular tama\u00f1o del efecto",
-                             class="btn-primary w-100 btn-sm", icon=icon("play")),
-                tags$hr(), uiOutput(ns("cards_practica_te"))
+                             class="btn-primary w-100 btn-sm", icon=icon("play"))
               )),
             div(plotOutput(ns("plot_practica_te"), height="320px"),
                 tags$hr(class = "mt-3 mb-2"),
@@ -133,7 +132,8 @@ mod_tamano_efecto_ui <- function(id) {
                    "Gr\u00e1fico de estimaci\u00f3n (Gardner-Altman)",
                    style = paste0("color:", colores$primario, "; font-weight:600;")),
                 plotOutput(ns("plot_efecto_practica_te"), height="150px"),
-                uiOutput(ns("insight_practica_te")))
+                uiOutput(ns("insight_practica_te")),
+                tags$hr(), uiOutput(ns("cards_practica_te")))
           )
         )
       ),
@@ -235,9 +235,9 @@ mod_tamano_efecto_server <- function(id) {
         labs(x = "Valor", y = "Densidad", color = NULL, fill = NULL,
              title = paste0("Cohen's d = ", round(s$cohen_d, 2), "  |  p = ",
                            format.pval(s$p_valor, digits = 3))) +
-        theme_light(base_size = 13) +
+        theme_light(base_size = 17) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
-              plot.title = element_text(color = colores$primario, face = "bold", size = 13),
+              plot.title = element_text(color = colores$primario, face = "bold", size = 17),
               legend.position = "top")
     })
 
@@ -256,9 +256,9 @@ mod_tamano_efecto_server <- function(id) {
         scale_y_continuous(limits = c(0, 1), breaks = NULL) +
         labs(x = "Diferencia (no estandarizada)", y = NULL,
              title = "Diferencia e IC 95%") +
-        theme_light(base_size = 12) +
+        theme_light(base_size = 16) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
-              plot.title = element_text(color = colores$primario, face = "bold", size = 11),
+              plot.title = element_text(color = colores$primario, face = "bold", size = 15),
               panel.grid.major.y = element_blank(),
               panel.grid.minor = element_blank())
     })
@@ -356,10 +356,10 @@ mod_tamano_efecto_server <- function(id) {
              title = paste0("Diferencia = ", round(r$dif, 2), " | Cohen's d = ",
                            round(r$cohen_d, 2)),
              subtitle = "Puntos = media, barras = IC 95%") +
-        theme_light(base_size = 13) +
+        theme_light(base_size = 17) +
         theme(legend.position = "none",
               plot.background = element_rect(fill = colores$fondo, color = NA),
-              plot.title = element_text(color = colores$primario, face = "bold", size = 13),
+              plot.title = element_text(color = colores$primario, face = "bold", size = 17),
               plot.subtitle = element_text(color = "grey40", size = 10.5))
     })
 
@@ -379,9 +379,9 @@ mod_tamano_efecto_server <- function(id) {
         scale_y_continuous(limits = c(0, 1), breaks = NULL) +
         labs(x = paste0("Diferencia (", input$var_num_te, ")"), y = NULL,
              title = "Diferencia e IC 95%") +
-        theme_light(base_size = 12) +
+        theme_light(base_size = 16) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
-              plot.title = element_text(color = colores$primario, face = "bold", size = 11),
+              plot.title = element_text(color = colores$primario, face = "bold", size = 15),
               panel.grid.major.y = element_blank(),
               panel.grid.minor = element_blank())
     })

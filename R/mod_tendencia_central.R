@@ -186,14 +186,14 @@ mod_tendencia_central_ui <- function(id) {
                             min = 20, max = 1000, value = 200, step = 10),
                 actionButton(ns("regenerar_sim_tc"), "Nueva muestra aleatoria",
                              class = "btn-outline-secondary w-100 btn-sm",
-                             icon  = icon("shuffle")),
-                tags$hr(),
-                uiOutput(ns("cards_sim_tc"))
+                             icon  = icon("shuffle"))
               )
             ),
             div(
               plotOutput(ns("plot_sim_tc"), height = "380px"),
-              uiOutput(ns("insight_sim_tc"))
+              uiOutput(ns("insight_sim_tc")),
+              tags$hr(),
+              uiOutput(ns("cards_sim_tc"))
             )
           )
         )
@@ -338,14 +338,14 @@ mod_tendencia_central_ui <- function(id) {
                   ns = ns,
                   numericInput(ns("valor_outlier_tc"), "Valor del outlier:",
                                value = 0)
-                ),
-                tags$hr(),
-                uiOutput(ns("cards_estadisticos_tc"))
+                )
               )
             ),
             div(
               plotOutput(ns("plot_histograma_tc"), height = "380px"),
-              uiOutput(ns("insight_tc"))
+              uiOutput(ns("insight_tc")),
+              tags$hr(),
+              uiOutput(ns("cards_estadisticos_tc"))
             )
           )
         )
@@ -442,13 +442,13 @@ mod_tendencia_central_server <- function(id) {
         geom_vline(xintercept = e$moda, color = colores$peligro,
                   linewidth = 1, linetype = "dotted") +
         annotate("text", x = e$media, y = Inf, label = "Media", vjust = 2,
-                color = colores$primario, fontface = "bold", size = 3.5) +
+                color = colores$primario, fontface = "bold", size = 4.3) +
         annotate("text", x = e$mediana, y = Inf, label = "Mediana", vjust = 4,
-                color = colores$acento, fontface = "bold", size = 3.5) +
+                color = colores$acento, fontface = "bold", size = 4.3) +
         annotate("text", x = e$moda, y = Inf, label = "Moda", vjust = 6,
-                color = colores$peligro, fontface = "bold", size = 3.5) +
+                color = colores$peligro, fontface = "bold", size = 4.3) +
         labs(x = "Valor simulado", y = "Densidad") +
-        theme_light(base_size = 13) +
+        theme_light(base_size = 17) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA))
     })
 
@@ -753,13 +753,13 @@ mod_tendencia_central_server <- function(id) {
         geom_vline(xintercept = e$moda, color = colores$peligro,
                   linewidth = 1, linetype = "dotted") +
         annotate("text", x = e$media, y = Inf, label = "Media", vjust = 2,
-                color = colores$primario, fontface = "bold", size = 3.5) +
+                color = colores$primario, fontface = "bold", size = 4.3) +
         annotate("text", x = e$mediana, y = Inf, label = "Mediana", vjust = 4,
-                color = colores$acento, fontface = "bold", size = 3.5) +
+                color = colores$acento, fontface = "bold", size = 4.3) +
         annotate("text", x = e$moda, y = Inf, label = "Moda", vjust = 6,
-                color = colores$peligro, fontface = "bold", size = 3.5) +
+                color = colores$peligro, fontface = "bold", size = 4.3) +
         labs(x = input$var_tc, y = "Densidad") +
-        theme_light(base_size = 13) +
+        theme_light(base_size = 17) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA))
     })
 

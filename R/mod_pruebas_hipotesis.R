@@ -129,11 +129,11 @@ mod_pruebas_hipotesis_ui <- function(id) {
                             min=5, max=200, value=30, step=5),
                 tags$hr(),
                 sliderInput(ns("alpha_sim_ph"), "Nivel de significancia (\u03b1):",
-                            min=0.01, max=0.20, value=0.05, step=0.01),
-                tags$hr(), uiOutput(ns("cards_sim_ph"))
+                            min=0.01, max=0.20, value=0.05, step=0.01)
               )),
             div(plotOutput(ns("plot_sim_ph"), height="380px"),
-                uiOutput(ns("insight_sim_ph")))
+                uiOutput(ns("insight_sim_ph")),
+                tags$hr(), uiOutput(ns("cards_sim_ph")))
           )
         )
       ),
@@ -155,11 +155,11 @@ mod_pruebas_hipotesis_ui <- function(id) {
                 sliderInput(ns("alpha_practica_ph"), "Nivel de significancia (\u03b1):",
                             min=0.01, max=0.20, value=0.05, step=0.01),
                 actionButton(ns("calcular_ph"), "Correr prueba t",
-                             class="btn-primary w-100 btn-sm", icon=icon("play")),
-                tags$hr(), uiOutput(ns("cards_practica_ph"))
+                             class="btn-primary w-100 btn-sm", icon=icon("play"))
               )),
             div(plotOutput(ns("plot_practica_ph"), height="320px"),
-                uiOutput(ns("insight_practica_ph")))
+                uiOutput(ns("insight_practica_ph")),
+                tags$hr(), uiOutput(ns("cards_practica_ph")))
           )
         )
       ),
@@ -202,9 +202,9 @@ mod_pruebas_hipotesis_server <- function(id) {
                  color = colores$acento, fontface = "bold", size = 3.3) +
         labs(x = "Valor", y = "Densidad",
              title = "Distribuci\u00f3n bajo H0 \u2014 \u00bfqu\u00e9 tan raro es mi dato?") +
-        theme_light(base_size = 12) +
+        theme_light(base_size = 16) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
-              plot.title = element_text(color = colores$primario, face = "bold", size = 12))
+              plot.title = element_text(color = colores$primario, face = "bold", size = 16))
     })
 
     sim_ph <- reactive({
@@ -274,9 +274,9 @@ mod_pruebas_hipotesis_server <- function(id) {
         labs(x = "Valor", y = "Densidad", color = NULL, fill = NULL,
              title = if (s$rechaza) "La diferencia es estad\u00edsticamente significativa"
                      else "La diferencia NO es estad\u00edsticamente significativa") +
-        theme_light(base_size = 13) +
+        theme_light(base_size = 17) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
-              plot.title = element_text(color = color_dato, face = "bold", size = 13),
+              plot.title = element_text(color = color_dato, face = "bold", size = 17),
               legend.position = "top")
     })
 
@@ -359,10 +359,10 @@ mod_pruebas_hipotesis_server <- function(id) {
                            format.pval(r$test$p.value, digits = 3)),
              subtitle = paste0("Puntos = media, barras = IC ",
                                round((1 - r$alpha) * 100), "%")) +
-        theme_light(base_size = 13) +
+        theme_light(base_size = 17) +
         theme(legend.position = "none",
               plot.background = element_rect(fill = colores$fondo, color = NA),
-              plot.title = element_text(color = colores$primario, face = "bold", size = 13),
+              plot.title = element_text(color = colores$primario, face = "bold", size = 17),
               plot.subtitle = element_text(color = "grey40", size = 10.5))
     })
 

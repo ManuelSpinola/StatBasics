@@ -293,14 +293,14 @@ mod_intervalos_confianza_ui <- function(id) {
                             min = 20, max = 100, value = 50, step = 10),
                 actionButton(ns("regenerar_sim_ic"), "Nueva simulaci\u00f3n",
                              class = "btn-outline-secondary w-100 btn-sm",
-                             icon  = icon("shuffle")),
-                tags$hr(),
-                uiOutput(ns("cards_sim_ic"))
+                             icon  = icon("shuffle"))
               )
             ),
             div(
               plotOutput(ns("plot_sim_ic"), height = "420px"),
-              uiOutput(ns("insight_sim_ic"))
+              uiOutput(ns("insight_sim_ic")),
+              tags$hr(),
+              uiOutput(ns("cards_sim_ic"))
             )
           )
         )
@@ -423,14 +423,14 @@ mod_intervalos_confianza_ui <- function(id) {
                             post = "%", ticks = FALSE),
                 actionButton(ns("calcular_ic"), "Calcular IC",
                              class = "btn-primary w-100 btn-sm",
-                             icon  = icon("play")),
-                tags$hr(),
-                uiOutput(ns("cards_practica_ic"))
+                             icon  = icon("play"))
               )
             ),
             div(
               plotOutput(ns("plot_practica_ic"), height = "260px"),
-              uiOutput(ns("insight_practica_ic"))
+              uiOutput(ns("insight_practica_ic")),
+              tags$hr(),
+              uiOutput(ns("cards_practica_ic"))
             )
           )
         )
@@ -513,11 +513,11 @@ mod_intervalos_confianza_server <- function(id) {
         labs(x = "Valor", y = "Muestra simulada",
              title = paste0("IC al ", round(conf * 100), "% \u2014 ",
                            input$reps_sim_ic, " muestras simuladas")) +
-        theme_light(base_size = 12) +
+        theme_light(base_size = 16) +
         theme(legend.position = "top",
               plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$primario,
-                                        face = "bold", size = 13))
+                                        face = "bold", size = 17))
     })
 
     output$insight_sim_ic <- renderUI({
@@ -766,10 +766,10 @@ mod_intervalos_confianza_server <- function(id) {
         labs(x = NULL, y = input$var_ic,
              title = paste0("Estimado e IC al ",
                            round(input$nivel_conf_ic * 100), "%")) +
-        theme_light(base_size = 13) +
+        theme_light(base_size = 17) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$primario,
-                                        face = "bold", size = 13))
+                                        face = "bold", size = 17))
     })
 
     output$insight_practica_ic <- renderUI({
