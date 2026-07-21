@@ -68,7 +68,7 @@ mod_error_estandar_ui <- function(id) {
               "problema aparece en cualquier campo:"
             ),
             layout_columns(
-              col_widths = c(4, 4, 4),
+              col_widths = breakpoints(sm = c(12, 12, 12), md = c(4, 4, 4)),
               card(
                 style = paste0("border-left:4px solid ", colores$secundario, ";"),
                 card_body(
@@ -352,7 +352,7 @@ mod_error_estandar_ui <- function(id) {
             "una, y se grafica c\u00f3mo se distribuyen esas medias."
           ),
           layout_columns(
-            col_widths = c(4, 8),
+            col_widths = breakpoints(sm = c(12, 12), lg = c(4, 8)),
             fill = FALSE,
             card(
               card_header(bs_icon("sliders", class = "me-1"), "Par\u00e1metros"),
@@ -397,7 +397,7 @@ mod_error_estandar_ui <- function(id) {
                               "Datos de ejemplo"),
               br(),
               layout_columns(
-                col_widths = c(4, 8),
+                col_widths = breakpoints(sm = c(12, 12), lg = c(4, 8)),
                 div(
                   radioButtons(
                     ns("fuente_datos_ee"),
@@ -422,12 +422,44 @@ mod_error_estandar_ui <- function(id) {
 
             # ── Sub 2: Mis datos ─────────────────────
             nav_panel(
-              title = tagList(bs_icon("upload", class = "me-1"), "Mis datos"),
+              title = tagList(bs_icon("folder2-open", class = "me-1"), "Mis datos"),
               br(),
-              fileInput(ns("archivo_ee"), "Sube un archivo CSV:",
-                        accept = c(".csv")),
-              tags$hr(),
-              DTOutput(ns("tabla_preview_propio_ee"))
+              layout_columns(
+                col_widths = breakpoints(sm = c(12, 12), lg = c(4, 8)),
+                div(
+                  p(class = "small text-muted mb-3",
+                    bs_icon("info-circle", class = "me-1"),
+                    "Sube un archivo CSV o Excel. ",
+                    "La primera fila debe contener los nombres de las columnas."),
+                  fileInput(
+                    ns("archivo_ee"),
+                    label       = "Seleccionar archivo:",
+                    accept      = c(".csv", ".xlsx", ".xls"),
+                    buttonLabel = "Buscar\u2026",
+                    placeholder = "CSV o Excel"
+                  ),
+                  selectInput(
+                    ns("separador_ee"),
+                    label   = "Separador (CSV):",
+                    choices = c(
+                      "Coma (,)"         = ",",
+                      "Punto y coma (;)" = ";",
+                      "Tabulador"        = "\t"
+                    )
+                  ),
+                  tags$hr(),
+                  uiOutput(ns("resumen_datos_propio_ee"))
+                ),
+                card(
+                  card_header(bs_icon("eye", class = "me-1"), "Vista previa"),
+                  card_body(
+                    style = "overflow: auto;",
+                    uiOutput(ns("cards_datos_propio_ee")),
+                    br(),
+                    DTOutput(ns("tabla_preview_propio_ee"))
+                  )
+                )
+              )
             ),
 
             # ── Sub 3: Tipos de variables ────────────
@@ -463,7 +495,7 @@ mod_error_estandar_ui <- function(id) {
             "ninguna f\u00f3rmula) \u2014 deber\u00edan coincidir de cerca."
           ),
           layout_columns(
-            col_widths = c(4, 8),
+            col_widths = breakpoints(sm = c(12, 12), lg = c(4, 8)),
             fill = FALSE,
             card(
               card_header(bs_icon("sliders", class = "me-1"), "Par\u00e1metros"),
@@ -904,7 +936,7 @@ mod_error_estandar_server <- function(id) {
       nnum <- sum(sapply(d, is.numeric))
       ncat <- sum(sapply(d, function(col) is.factor(col) || is.character(col)))
       layout_columns(
-        col_widths = c(4, 4, 4),
+        col_widths = breakpoints(sm = c(12, 12, 12), md = c(4, 4, 4)),
         card(class = "text-center",
              card_body(class = "p-2",
                h3(style = paste0("color:", colores$primario, "; font-weight:700;"),
@@ -933,13 +965,56 @@ mod_error_estandar_server <- function(id) {
     # ── Mis datos ──────────────────────────────────────
     datos_propio_ee <- reactive({
       req(input$archivo_ee)
-      df <- readr::read_csv(input$archivo_ee$datapath, show_col_types = FALSE)
-      df |> dplyr::mutate(dplyr::across(where(is.character), as.factor))
+      ext <- tools::file_ext(input$archivo_ee$name)
+      tryCatch({
+        df <- if (ext %in% c("xlsx", "xls"))
+          readxl::read_excel(input$archivo_ee$datapath)
+        else
+          readr::read_delim(input$archivo_ee$datapath,
+                            delim = input$separador_ee %||% ",",
+                            show_col_types = FALSE)
+        df |> dplyr::mutate(dplyr::across(where(is.character), as.factor))
+      }, error = function(e) {
+        showNotification(paste("Error al leer archivo:", e$message),
+                         type = "error", duration = 6)
+        NULL
+      })
     })
 
-    observeEvent(input$archivo_ee, {
+    observeEvent(datos_propio_ee(), {
       req(datos_propio_ee())
       datos_mod(as.data.frame(datos_propio_ee()))
+    })
+
+    output$resumen_datos_propio_ee <- renderUI({
+      req(datos_propio_ee())
+      d <- datos_propio_ee()
+      div(class = "small text-muted",
+          bs_icon("check-circle-fill",
+                  style = paste0("color:", colores$exito), class = "me-1"),
+          paste0(nrow(d), " filas \u00b7 ", ncol(d), " columnas"))
+    })
+
+    output$cards_datos_propio_ee <- renderUI({
+      req(datos_propio_ee())
+      d    <- datos_propio_ee()
+      nnum <- sum(sapply(d, is.numeric))
+      ncat <- sum(sapply(d, function(x) is.factor(x) || is.character(x)))
+      layout_columns(
+        col_widths = breakpoints(sm = c(12, 12, 12), md = c(4, 4, 4)),
+        card(class = "text-center",
+             card_body(class = "p-2",
+               h3(style = paste0("color:", colores$primario, "; font-weight:700;"), nrow(d)),
+               p(class = "small text-muted mb-0", "Observaciones"))),
+        card(class = "text-center",
+             card_body(class = "p-2",
+               h3(style = paste0("color:", colores$acento, "; font-weight:700;"), nnum),
+               p(class = "small text-muted mb-0", "Num\u00e9ricas"))),
+        card(class = "text-center",
+             card_body(class = "p-2",
+               h3(style = paste0("color:", colores$secundario, "; font-weight:700;"), ncat),
+               p(class = "small text-muted mb-0", "Categ\u00f3ricas")))
+      )
     })
 
     output$tabla_preview_propio_ee <- renderDT({

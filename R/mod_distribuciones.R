@@ -166,7 +166,7 @@ mod_distribuciones_ui <- function(id) {
           h5(style = paste0("color:", colores$primario, "; font-weight:700;"),
              "\u00bfDiscreta o continua?"),
           layout_columns(
-            col_widths = c(6, 6),
+            col_widths = breakpoints(sm = c(12, 12), lg = c(6, 6)),
             div(
               class = "alert alert-info small py-2 px-3 mb-0",
               bs_icon("bar-chart-steps", class = "me-1",
@@ -206,7 +206,7 @@ mod_distribuciones_ui <- function(id) {
             "en vivo c\u00f3mo cambia su forma."
           ),
           layout_columns(
-            col_widths = c(4, 8),
+            col_widths = breakpoints(sm = c(12, 12), lg = c(4, 8)),
             fill = FALSE,
             card(
               card_header(bs_icon("sliders", class = "me-1"), "Par\u00e1metros"),
@@ -251,7 +251,7 @@ mod_distribuciones_ui <- function(id) {
                               "Datos de ejemplo"),
               br(),
               layout_columns(
-                col_widths = c(4, 8),
+                col_widths = breakpoints(sm = c(12, 12), lg = c(4, 8)),
                 div(
                   radioButtons(
                     ns("fuente_datos_dist"),
@@ -276,12 +276,44 @@ mod_distribuciones_ui <- function(id) {
 
             # ── Sub 2: Mis datos ─────────────────────
             nav_panel(
-              title = tagList(bs_icon("upload", class = "me-1"), "Mis datos"),
+              title = tagList(bs_icon("folder2-open", class = "me-1"), "Mis datos"),
               br(),
-              fileInput(ns("archivo_dist"), "Sube un archivo CSV:",
-                        accept = c(".csv")),
-              tags$hr(),
-              DTOutput(ns("tabla_preview_propio_dist"))
+              layout_columns(
+                col_widths = breakpoints(sm = c(12, 12), lg = c(4, 8)),
+                div(
+                  p(class = "small text-muted mb-3",
+                    bs_icon("info-circle", class = "me-1"),
+                    "Sube un archivo CSV o Excel. ",
+                    "La primera fila debe contener los nombres de las columnas."),
+                  fileInput(
+                    ns("archivo_dist"),
+                    label       = "Seleccionar archivo:",
+                    accept      = c(".csv", ".xlsx", ".xls"),
+                    buttonLabel = "Buscar\u2026",
+                    placeholder = "CSV o Excel"
+                  ),
+                  selectInput(
+                    ns("separador_dist"),
+                    label   = "Separador (CSV):",
+                    choices = c(
+                      "Coma (,)"         = ",",
+                      "Punto y coma (;)" = ";",
+                      "Tabulador"        = "\t"
+                    )
+                  ),
+                  tags$hr(),
+                  uiOutput(ns("resumen_datos_propio_dist"))
+                ),
+                card(
+                  card_header(bs_icon("eye", class = "me-1"), "Vista previa"),
+                  card_body(
+                    style = "overflow: auto;",
+                    uiOutput(ns("cards_datos_propio_dist")),
+                    br(),
+                    DTOutput(ns("tabla_preview_propio_dist"))
+                  )
+                )
+              )
             ),
 
             # ── Sub 3: Tipos de variables ────────────
@@ -317,7 +349,7 @@ mod_distribuciones_ui <- function(id) {
             "ajustan por m\u00e1xima verosimilitud y se comparan."
           ),
           layout_columns(
-            col_widths = c(3, 9),
+            col_widths = breakpoints(sm = c(12, 12), lg = c(3, 9)),
             fill = FALSE,
             card(
               card_header(bs_icon("sliders", class = "me-1"), "Controles"),
@@ -562,7 +594,7 @@ mod_distribuciones_server <- function(id) {
       nnum <- sum(sapply(d, is.numeric))
       ncat <- sum(sapply(d, function(col) is.factor(col) || is.character(col)))
       layout_columns(
-        col_widths = c(4, 4, 4),
+        col_widths = breakpoints(sm = c(12, 12, 12), md = c(4, 4, 4)),
         card(class = "text-center",
              card_body(class = "p-2",
                h3(style = paste0("color:", colores$primario, "; font-weight:700;"),
@@ -591,13 +623,56 @@ mod_distribuciones_server <- function(id) {
     # ── Mis datos ──────────────────────────────────────
     datos_propio_dist <- reactive({
       req(input$archivo_dist)
-      df <- readr::read_csv(input$archivo_dist$datapath, show_col_types = FALSE)
-      df |> dplyr::mutate(dplyr::across(where(is.character), as.factor))
+      ext <- tools::file_ext(input$archivo_dist$name)
+      tryCatch({
+        df <- if (ext %in% c("xlsx", "xls"))
+          readxl::read_excel(input$archivo_dist$datapath)
+        else
+          readr::read_delim(input$archivo_dist$datapath,
+                            delim = input$separador_dist %||% ",",
+                            show_col_types = FALSE)
+        df |> dplyr::mutate(dplyr::across(where(is.character), as.factor))
+      }, error = function(e) {
+        showNotification(paste("Error al leer archivo:", e$message),
+                         type = "error", duration = 6)
+        NULL
+      })
     })
 
-    observeEvent(input$archivo_dist, {
+    observeEvent(datos_propio_dist(), {
       req(datos_propio_dist())
       datos_mod(as.data.frame(datos_propio_dist()))
+    })
+
+    output$resumen_datos_propio_dist <- renderUI({
+      req(datos_propio_dist())
+      d <- datos_propio_dist()
+      div(class = "small text-muted",
+          bs_icon("check-circle-fill",
+                  style = paste0("color:", colores$exito), class = "me-1"),
+          paste0(nrow(d), " filas \u00b7 ", ncol(d), " columnas"))
+    })
+
+    output$cards_datos_propio_dist <- renderUI({
+      req(datos_propio_dist())
+      d    <- datos_propio_dist()
+      nnum <- sum(sapply(d, is.numeric))
+      ncat <- sum(sapply(d, function(x) is.factor(x) || is.character(x)))
+      layout_columns(
+        col_widths = breakpoints(sm = c(12, 12, 12), md = c(4, 4, 4)),
+        card(class = "text-center",
+             card_body(class = "p-2",
+               h3(style = paste0("color:", colores$primario, "; font-weight:700;"), nrow(d)),
+               p(class = "small text-muted mb-0", "Observaciones"))),
+        card(class = "text-center",
+             card_body(class = "p-2",
+               h3(style = paste0("color:", colores$acento, "; font-weight:700;"), nnum),
+               p(class = "small text-muted mb-0", "Num\u00e9ricas"))),
+        card(class = "text-center",
+             card_body(class = "p-2",
+               h3(style = paste0("color:", colores$secundario, "; font-weight:700;"), ncat),
+               p(class = "small text-muted mb-0", "Categ\u00f3ricas")))
+      )
     })
 
     output$tabla_preview_propio_dist <- renderDT({
@@ -731,7 +806,7 @@ mod_distribuciones_server <- function(id) {
       sobredispersa <- r$indice > 1.5
       tagList(
         layout_columns(
-          col_widths = c(4, 4, 4),
+          col_widths = breakpoints(sm = c(12, 12, 12), md = c(4, 4, 4)),
           tarjeta_metrica("Media", round(r$media, 2), "media"),
           tarjeta_metrica("Varianza", round(r$varianza, 2), "varianza"),
           div(
@@ -833,7 +908,7 @@ mod_distribuciones_server <- function(id) {
         h5(style = paste0("color:", colores$primario, "; font-weight:700;"),
            "Densidad ajustada y gr\u00e1fico Q-Q"),
         layout_columns(
-          col_widths = c(6, 6),
+          col_widths = breakpoints(sm = c(12, 12), lg = c(6, 6)),
           plotOutput(ns("plot_denscomp_dist"), height = "360px"),
           plotOutput(ns("plot_qqcomp_dist"), height = "360px")
         )

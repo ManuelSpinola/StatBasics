@@ -130,7 +130,7 @@ mod_probabilidad_ui <- function(id) {
             "relativa observada converge a la probabilidad te\u00f3rica."
           ),
           layout_columns(
-            col_widths = c(4, 8),
+            col_widths = breakpoints(sm = c(12, 12), lg = c(4, 8)),
             fill = FALSE,
             card(
               card_header(bs_icon("sliders", class = "me-1"), "Par\u00e1metros"),
@@ -236,7 +236,7 @@ mod_probabilidad_ui <- function(id) {
             "positivo)."
           ),
           layout_columns(
-            col_widths = c(4, 8),
+            col_widths = breakpoints(sm = c(12, 12), lg = c(4, 8)),
             fill = FALSE,
             card(
               card_header(bs_icon("sliders", class = "me-1"), "Par\u00e1metros"),

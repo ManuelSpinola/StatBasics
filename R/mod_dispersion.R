@@ -87,7 +87,7 @@ mod_dispersion_ui <- function(id) {
           h5(style = paste0("color:", colores$primario, "; font-weight:700;"),
              "\u00bfRobusta o sensible a valores at\u00edpicos?"),
           layout_columns(
-            col_widths = c(6, 6),
+            col_widths = breakpoints(sm = c(12, 12), lg = c(6, 6)),
             div(
               class = "alert alert-warning small py-2 px-3 mb-0",
               bs_icon("exclamation-triangle-fill", class = "me-1",
@@ -139,7 +139,7 @@ mod_dispersion_ui <- function(id) {
             strong("tama\u00f1o de muestra"), "."
           ),
           layout_columns(
-            col_widths = c(4, 8),
+            col_widths = breakpoints(sm = c(12, 12), lg = c(4, 8)),
             fill = FALSE,
             card(
               card_header(bs_icon("sliders", class = "me-1"), "Par\u00e1metros"),
@@ -183,7 +183,7 @@ mod_dispersion_ui <- function(id) {
                               "Datos de ejemplo"),
               br(),
               layout_columns(
-                col_widths = c(4, 8),
+                col_widths = breakpoints(sm = c(12, 12), lg = c(4, 8)),
                 div(
                   radioButtons(
                     ns("fuente_datos_disp"),
@@ -218,7 +218,7 @@ mod_dispersion_ui <- function(id) {
                               "Mis datos"),
               br(),
               layout_columns(
-                col_widths = c(4, 8),
+                col_widths = breakpoints(sm = c(12, 12), lg = c(4, 8)),
                 div(
                   p(class = "small text-muted mb-3",
                     bs_icon("info-circle", class = "me-1"),
@@ -266,7 +266,7 @@ mod_dispersion_ui <- function(id) {
                 "para variables ", strong("num\u00e9ricas"), "."
               ),
               layout_columns(
-                col_widths = c(10, 2),
+                col_widths = breakpoints(sm = c(12, 12), lg = c(10, 2)),
                 uiOutput(ns("tabla_tipos_disp")),
                 div(
                   class = "pt-2",
@@ -293,7 +293,7 @@ mod_dispersion_ui <- function(id) {
                         "Practica con datos reales"),
         card_body(
           layout_columns(
-            col_widths = c(4, 8),
+            col_widths = breakpoints(sm = c(12, 12), lg = c(4, 8)),
             fill = FALSE,
             card(
               card_header(bs_icon("sliders", class = "me-1"), "Controles"),
@@ -478,7 +478,7 @@ mod_dispersion_server <- function(id) {
       nnum <- sum(sapply(d, is.numeric))
       ncat <- sum(sapply(d, function(x) is.factor(x) || is.character(x)))
       layout_columns(
-        col_widths = c(4, 4, 4),
+        col_widths = breakpoints(sm = c(12, 12, 12), md = c(4, 4, 4)),
         card(class = "text-center",
              card_body(class = "p-2",
                h3(style = paste0("color:", colores$primario, "; font-weight:700;"),
@@ -540,7 +540,7 @@ mod_dispersion_server <- function(id) {
       nnum <- sum(sapply(d, is.numeric))
       ncat <- sum(sapply(d, function(x) is.factor(x) || is.character(x)))
       layout_columns(
-        col_widths = c(4, 4, 4),
+        col_widths = breakpoints(sm = c(12, 12, 12), md = c(4, 4, 4)),
         card(class = "text-center",
              card_body(class = "p-2",
                h3(style = paste0("color:", colores$primario, "; font-weight:700;"),

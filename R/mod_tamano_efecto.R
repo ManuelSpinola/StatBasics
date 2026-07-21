@@ -77,7 +77,7 @@ mod_tamano_efecto_ui <- function(id) {
             "cambia"), " (mide la magnitud real, que no toc\u00e1s), pero el ",
             strong("valor p S\u00cd cambia"), " \u2014 una muestra m\u00e1s grande ",
             "detecta la misma diferencia con m\u00e1s confianza."),
-          layout_columns(col_widths = c(4,8), fill = FALSE,
+          layout_columns(col_widths = breakpoints(sm = c(12, 12), lg = c(4, 8)), fill = FALSE,
             card(card_header(bs_icon("sliders", class="me-1"), "Par\u00e1metros"),
               card_body(
                 h6(class = "text-muted mb-1", "Grupo 1 (ej.: machos)"),
@@ -113,7 +113,7 @@ mod_tamano_efecto_ui <- function(id) {
           p(class="small text-muted mb-3",
             "Compara una variable num\u00e9rica entre dos grupos \u2014 se ",
             "calculan ambos tipos de tama\u00f1o de efecto."),
-          layout_columns(col_widths = c(4,8), fill = FALSE,
+          layout_columns(col_widths = breakpoints(sm = c(12, 12), lg = c(4, 8)), fill = FALSE,
             card(card_header(bs_icon("sliders", class="me-1"), "Par\u00e1metros"),
               card_body(
                 radioButtons(ns("fuente_datos_te"), "Dataset:",

@@ -279,7 +279,7 @@ mod_intervalos_confianza_ui <- function(id) {
             "los rojos NO."
           ),
           layout_columns(
-            col_widths = c(4, 8),
+            col_widths = breakpoints(sm = c(12, 12), lg = c(4, 8)),
             fill = FALSE,
             card(
               card_header(bs_icon("sliders", class = "me-1"), "Par\u00e1metros"),
@@ -319,7 +319,7 @@ mod_intervalos_confianza_ui <- function(id) {
                               "Datos de ejemplo"),
               br(),
               layout_columns(
-                col_widths = c(4, 8),
+                col_widths = breakpoints(sm = c(12, 12), lg = c(4, 8)),
                 div(
                   radioButtons(
                     ns("fuente_datos_ic"),
@@ -343,12 +343,44 @@ mod_intervalos_confianza_ui <- function(id) {
             ),
 
             nav_panel(
-              title = tagList(bs_icon("upload", class = "me-1"), "Mis datos"),
+              title = tagList(bs_icon("folder2-open", class = "me-1"), "Mis datos"),
               br(),
-              fileInput(ns("archivo_ic"), "Sube un archivo CSV:",
-                        accept = c(".csv")),
-              tags$hr(),
-              DTOutput(ns("tabla_preview_propio_ic"))
+              layout_columns(
+                col_widths = breakpoints(sm = c(12, 12), lg = c(4, 8)),
+                div(
+                  p(class = "small text-muted mb-3",
+                    bs_icon("info-circle", class = "me-1"),
+                    "Sube un archivo CSV o Excel. ",
+                    "La primera fila debe contener los nombres de las columnas."),
+                  fileInput(
+                    ns("archivo_ic"),
+                    label       = "Seleccionar archivo:",
+                    accept      = c(".csv", ".xlsx", ".xls"),
+                    buttonLabel = "Buscar\u2026",
+                    placeholder = "CSV o Excel"
+                  ),
+                  selectInput(
+                    ns("separador_ic"),
+                    label   = "Separador (CSV):",
+                    choices = c(
+                      "Coma (,)"         = ",",
+                      "Punto y coma (;)" = ";",
+                      "Tabulador"        = "\t"
+                    )
+                  ),
+                  tags$hr(),
+                  uiOutput(ns("resumen_datos_propio_ic"))
+                ),
+                card(
+                  card_header(bs_icon("eye", class = "me-1"), "Vista previa"),
+                  card_body(
+                    style = "overflow: auto;",
+                    uiOutput(ns("cards_datos_propio_ic")),
+                    br(),
+                    DTOutput(ns("tabla_preview_propio_ic"))
+                  )
+                )
+              )
             ),
 
             nav_panel(
@@ -380,7 +412,7 @@ mod_intervalos_confianza_ui <- function(id) {
             "construir su intervalo."
           ),
           layout_columns(
-            col_widths = c(4, 8),
+            col_widths = breakpoints(sm = c(12, 12), lg = c(4, 8)),
             fill = FALSE,
             card(
               card_header(bs_icon("sliders", class = "me-1"), "Par\u00e1metros"),
@@ -541,7 +573,7 @@ mod_intervalos_confianza_server <- function(id) {
       nnum <- sum(sapply(d, is.numeric))
       ncat <- sum(sapply(d, function(col) is.factor(col) || is.character(col)))
       layout_columns(
-        col_widths = c(4, 4, 4),
+        col_widths = breakpoints(sm = c(12, 12, 12), md = c(4, 4, 4)),
         card(class = "text-center",
              card_body(class = "p-2",
                h3(style = paste0("color:", colores$primario, "; font-weight:700;"),
@@ -569,13 +601,56 @@ mod_intervalos_confianza_server <- function(id) {
 
     datos_propio_ic <- reactive({
       req(input$archivo_ic)
-      df <- readr::read_csv(input$archivo_ic$datapath, show_col_types = FALSE)
-      df |> dplyr::mutate(dplyr::across(where(is.character), as.factor))
+      ext <- tools::file_ext(input$archivo_ic$name)
+      tryCatch({
+        df <- if (ext %in% c("xlsx", "xls"))
+          readxl::read_excel(input$archivo_ic$datapath)
+        else
+          readr::read_delim(input$archivo_ic$datapath,
+                            delim = input$separador_ic %||% ",",
+                            show_col_types = FALSE)
+        df |> dplyr::mutate(dplyr::across(where(is.character), as.factor))
+      }, error = function(e) {
+        showNotification(paste("Error al leer archivo:", e$message),
+                         type = "error", duration = 6)
+        NULL
+      })
     })
 
-    observeEvent(input$archivo_ic, {
+    observeEvent(datos_propio_ic(), {
       req(datos_propio_ic())
       datos_mod(as.data.frame(datos_propio_ic()))
+    })
+
+    output$resumen_datos_propio_ic <- renderUI({
+      req(datos_propio_ic())
+      d <- datos_propio_ic()
+      div(class = "small text-muted",
+          bs_icon("check-circle-fill",
+                  style = paste0("color:", colores$exito), class = "me-1"),
+          paste0(nrow(d), " filas \u00b7 ", ncol(d), " columnas"))
+    })
+
+    output$cards_datos_propio_ic <- renderUI({
+      req(datos_propio_ic())
+      d    <- datos_propio_ic()
+      nnum <- sum(sapply(d, is.numeric))
+      ncat <- sum(sapply(d, function(x) is.factor(x) || is.character(x)))
+      layout_columns(
+        col_widths = breakpoints(sm = c(12, 12, 12), md = c(4, 4, 4)),
+        card(class = "text-center",
+             card_body(class = "p-2",
+               h3(style = paste0("color:", colores$primario, "; font-weight:700;"), nrow(d)),
+               p(class = "small text-muted mb-0", "Observaciones"))),
+        card(class = "text-center",
+             card_body(class = "p-2",
+               h3(style = paste0("color:", colores$acento, "; font-weight:700;"), nnum),
+               p(class = "small text-muted mb-0", "Num\u00e9ricas"))),
+        card(class = "text-center",
+             card_body(class = "p-2",
+               h3(style = paste0("color:", colores$secundario, "; font-weight:700;"), ncat),
+               p(class = "small text-muted mb-0", "Categ\u00f3ricas")))
+      )
     })
 
     output$tabla_preview_propio_ic <- renderDT({

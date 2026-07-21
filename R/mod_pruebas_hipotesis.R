@@ -109,7 +109,7 @@ mod_pruebas_hipotesis_ui <- function(id) {
             "H\u2080 dice que ambos grupos vienen de la misma poblaci\u00f3n (sin ",
             "diferencia real). Mueve las medias, las DE y los tama\u00f1os de ",
             "muestra de cada grupo y observa cu\u00e1ndo la prueba rechaza H\u2080."),
-          layout_columns(col_widths = c(4,8), fill = FALSE,
+          layout_columns(col_widths = breakpoints(sm = c(12, 12), lg = c(4, 8)), fill = FALSE,
             card(card_header(bs_icon("sliders", class="me-1"), "Par\u00e1metros"),
               card_body(
                 h6(class = "text-muted mb-1", "Grupo 1 (ej.: machos)"),
@@ -142,7 +142,7 @@ mod_pruebas_hipotesis_ui <- function(id) {
         card_body(
           p(class="small text-muted mb-3",
             "Compara una variable num\u00e9rica entre dos grupos de un dataset."),
-          layout_columns(col_widths = c(4,8), fill = FALSE,
+          layout_columns(col_widths = breakpoints(sm = c(12, 12), lg = c(4, 8)), fill = FALSE,
             card(card_header(bs_icon("sliders", class="me-1"), "Par\u00e1metros"),
               card_body(
                 radioButtons(ns("fuente_datos_ph"), "Dataset:",
