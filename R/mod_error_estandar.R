@@ -127,32 +127,7 @@ mod_error_estandar_ui <- function(id) {
             )
           ),
 
-          p(class = "text-muted mt-3 mb-2",
-            "As\u00ed se ve esa idea de ", strong("precisi\u00f3n"), " en un ",
-            "gr\u00e1fico:"
-          ),
-          fluidRow(
-            column(6, plotOutput(ns("plot_de_vs_ee_ind"), height = "280px")),
-            column(6, plotOutput(ns("plot_de_vs_ee_medias"), height = "280px"))
-          ),
-          div(class = "alert alert-secondary small mt-2 mb-3",
-              bs_icon("info-circle", class = "me-1",
-                      style = paste0("color:", colores$primario)),
-              "A la izquierda: pesos individuales de vampiros \u2014 var\u00edan ",
-              "bastante entre un individuo y otro. A la derecha: la ",
-              em("distribuci\u00f3n"), " de 300 medias muestrales distintas ",
-              "(de 10 vampiros cada una) \u2014 mucho m\u00e1s angosta. Tu ",
-              "estimado real (la media de la \u00fanica muestra que t\u00fa ",
-              "tomar\u00edas) es solo ", strong("un punto"), " de esa ",
-              "distribuci\u00f3n de la derecha \u2014 no tiene una \"precisi\u00f3n\" ",
-              "propia, pero como la mayor\u00eda de esa distribuci\u00f3n cae ",
-              "cerca de \u03bc, es probable que tu estimado tambi\u00e9n lo est\u00e9. ",
-              "Esa dispersi\u00f3n de la derecha \u2014qu\u00e9 tan cerca caen la ",
-              "mayor\u00eda de las medias posibles\u2014 es exactamente lo que ",
-              "mide el error est\u00e1ndar."
-          ),
-
-          conector_infografia("Para ver exactamente c\u00f3mo funciona, usemos un caso especial donde S\u00cd podemos medir a todos"),
+          conector_infografia("Para verlo con n\u00fameros concretos, empecemos con un caso donde S\u00cd podemos medir a toda la poblaci\u00f3n"),
 
           fluidRow(
             column(
@@ -196,6 +171,59 @@ mod_error_estandar_ui <- function(id) {
           ),
 
           uiOutput(ns("resumen_tabla_enumeracion_ee")),
+
+          conector_infografia("Esto mismo pasa con poblaciones grandes que no pod\u00e9s enumerar \u2014 mir\u00e9moslo con miles de vampiros"),
+
+          p(class = "text-muted mt-3 mb-2",
+            "As\u00ed se ve esa idea de ", strong("precisi\u00f3n"), " en un ",
+            "gr\u00e1fico, a mayor escala:"
+          ),
+          fluidRow(
+            column(6, plotOutput(ns("plot_de_vs_ee_ind"), height = "280px")),
+            column(6, plotOutput(ns("plot_de_vs_ee_medias"), height = "280px"))
+          ),
+          div(class = "d-flex align-items-center gap-2 justify-content-center mt-2 mb-1",
+              actionButton(ns("construir_anim_ee"),
+                           tagList(bs_icon("play-fill"), " Construir la distribuci\u00f3n"),
+                           class = "btn-primary btn-sm"),
+              actionButton(ns("reiniciar_anim_ee"),
+                           tagList(bs_icon("arrow-counterclockwise"), " Reiniciar"),
+                           class = "btn-outline-secondary btn-sm"),
+              span(class = "small text-muted ms-2", uiOutput(ns("contador_anim_ee"), inline = TRUE))
+          ),
+          div(class = "alert alert-secondary small mt-2 mb-3",
+              bs_icon("info-circle", class = "me-1",
+                      style = paste0("color:", colores$primario)),
+              "Con las dantas pudiste enumerar las 10 muestras posibles ",
+              "porque la poblaci\u00f3n era chiquita. Con miles de vampiros no ",
+              "se puede enumerar, pero el principio es id\u00e9ntico. A la ",
+              "izquierda: pesos individuales de una sola muestra de ",
+              "vampiros \u2014 var\u00edan bastante alrededor de su ",
+              strong("media"), " (l\u00ednea punteada roja, equivalente a la ",
+              em("media muestral"), " x\u0304 de las dantas). A la ",
+              "derecha: la ", em("distribuci\u00f3n"), " de 300 medias ",
+              "muestrales distintas, cada una calculada de su propia ",
+              "muestra de 30 vampiros \u2014 mucho m\u00e1s angosta alrededor de ",
+              "su ", strong("gran media"), " (equivalente a la ", em("media ",
+              "poblacional"), " \u03bc de las dantas, que ac\u00e1 no conocemos ",
+              "con certeza, pero la gran media se le acerca much\u00edsimo). ",
+              "Compar\u00e1 el ancho de las dos distribuciones: los datos ",
+              "individuales (izquierda) se dispersan mucho respecto a su ",
+              "media \u2014 eso es la ", strong("desviaci\u00f3n est\u00e1ndar"),
+              ". Las medias muestrales (derecha) se dispersan mucho menos ",
+              "respecto a la gran media \u2014 eso es el ",
+              strong("error est\u00e1ndar"), ". Toc\u00e1 ",
+              strong("\"Construir la distribuci\u00f3n\""), " arriba para ver, ",
+              "muestra por muestra, c\u00f3mo se va formando esa nube de la ",
+              "derecha \u2014 y c\u00f3mo la gran media se estabiliza a medida ",
+              "que se acumulan m\u00e1s muestras. Esa desviaci\u00f3n est\u00e1ndar de ",
+              "las medias \u2014el error est\u00e1ndar\u2014 no hace falta simularla ",
+              "cada vez: se puede ", strong("calcular"), " con \u03c3/\u221an si ",
+              "conoc\u00e9s la desviaci\u00f3n est\u00e1ndar poblacional (\u03c3), o ",
+              strong("estimar"), " con s/\u221an usando la desviaci\u00f3n ",
+              "est\u00e1ndar de tu propia muestra (s) \u2014 esa es la f\u00f3rmula ",
+              "que ver\u00e1s repetida en el resto de este m\u00f3dulo."
+          ),
 
           h5(style = paste0("color:", colores$primario, "; font-weight:700;"),
              "DE vs. EE \u2014 la confusi\u00f3n m\u00e1s com\u00fan"),
@@ -263,76 +291,16 @@ mod_error_estandar_ui <- function(id) {
               "o de probabilidad de detecci\u00f3n p. Lo que cambia es ",
               em("c\u00f3mo"), " se calcula \u2014 EE = s/\u221an es espec\u00edfica ",
               "de la media. Este m\u00f3dulo usa la media porque es el ejemplo ",
-              "m\u00e1s simple, pero el mismo principio aplica en ",
-              "StatModels/StatBayes/StatOccu/StatAbundance para sus ",
-              "respectivos par\u00e1metros."
-            )
-          ),
-
-          h5(style = paste0("color:", colores$primario,
-                          "; font-weight:700; margin-top:20px;"),
-             "El Teorema Central del L\u00edmite (TCL) y otra propiedad relacionada"),
-          p(class = "text-muted mb-2",
-            "Si tomas muchas muestras del mismo tama\u00f1o n y calculas la ",
-            "media de cada una, esas medias forman su propia distribuci\u00f3n ",
-            "\u2014 la ", strong("distribuci\u00f3n muestral de la media"), ". Dos ",
-            "cosas ciertas sobre ella \u2014 pero ", strong("no vienen del mismo ",
-            "lugar"), ":"
-          ),
-          fluidRow(
-            column(6,
-              tarjeta_concepto(
-                "bell", colores$primario, "Se vuelve normal (esto S\u00cd es el TCL)",
-                p(class = "mb-0",
-                  "Sin importar la forma de la poblaci\u00f3n original (incluso ",
-                  "sesgada), la distribuci\u00f3n de las medias muestrales se ",
-                  "aproxima a una normal cuando n es suficientemente ",
-                  "grande. Esto es lo que el Teorema Central del L\u00edmite ",
-                  "realmente afirma \u2014 y s\u00ed necesita n razonablemente ",
-                  "grande para cumplirse bien."
-                )
-              )
-            ),
-            column(6,
-              tarjeta_concepto(
-                "arrow-down-short", colores$acento,
-                "Se encoge (esto NO es el TCL)",
-                p(class = "mb-0",
-                  "Su dispersi\u00f3n (el EE) disminuye proporcionalmente a ",
-                  "1/\u221an \u2014 cuadruplicar n solo reduce el EE a la ",
-                  "mitad. Esto es simple \u00e1lgebra de varianzas (Var de un ",
-                  "promedio = \u03c3\u00b2/n): es cierto para ", em("cualquier"),
-                  " n, incluso n peque\u00f1o \u2014 no depende del TCL ni ",
-                  "necesita que la distribuci\u00f3n ya sea normal. Vi\u00e9ndolo ",
-                  "en un gr\u00e1fico:"
-                ),
-                plotOutput(ns("plot_de_vs_n"), height = "220px")
-              )
-            )
-          ),
-
-          tarjeta_concepto(
-            "exclamation-triangle", colores$peligro,
-            "Cuidado \u2014 el TCL es sobre medias",
-            p(class = "mb-0",
-              "Una ", em("tasa de supervivencia"), " o cualquier proporci\u00f3n ",
-              "S\u00cd est\u00e1 cubierta por el TCL, porque en el fondo es una ",
-              "media disfrazada (codifica cada individuo como 1 = sobrevivi\u00f3 ",
-              "/ 0 = muri\u00f3). Pero par\u00e1metros como el ",
-              strong("tama\u00f1o poblacional (N)"), " o la ", strong(
-              "probabilidad de detecci\u00f3n (p)"), " en modelos de ",
-              "ocupaci\u00f3n ", em("no"), " son medias \u2014 su ",
-              "normalidad aproximada viene de un teorema hermano: la ",
-              strong("teor\u00eda asint\u00f3tica de m\u00e1xima verosimilitud"),
-              ". Por eso StatOccu/StatAbundance usan intervalos ",
-              em("log-normales"), " para N en vez de normales."
+              "m\u00e1s simple, pero el mismo principio aplica a otros ",
+              "estad\u00edsticos con sus propias f\u00f3rmulas."
             )
           ),
 
           p(class = "text-muted mt-3 mb-0",
             "Compru\u00e9balo t\u00fa mismo en ", strong("Simulaci\u00f3n interactiva"),
-            " \u2014 mueve el tama\u00f1o de muestra y observa c\u00f3mo cambia ",
-            "la forma y el ancho de la distribuci\u00f3n de medias."
+            " \u2014 repet\u00ed el muestreo miles de veces y mir\u00e1 c\u00f3mo la ",
+            "gran media y el EE observado se acercan cada vez m\u00e1s a lo ",
+            "que predice la f\u00f3rmula."
           )
         )
       ),
@@ -345,11 +313,11 @@ mod_error_estandar_ui <- function(id) {
                         "Simulaci\u00f3n interactiva"),
         card_body(
           p(class = "small text-muted mb-3",
-            "Como en el ejemplo de la Isla Sola: se genera una poblaci\u00f3n ",
-            "finita conocida de tama\u00f1o N. Cada vez que mueves el ",
-            "tama\u00f1o de muestra, se toman muchas muestras ", em("sin ",
-            "reemplazo"), " de ese tama\u00f1o, se calcula la media de cada ",
-            "una, y se grafica c\u00f3mo se distribuyen esas medias."
+            "Eleg\u00ed el tama\u00f1o de cada muestra y cu\u00e1ntas muestras ",
+            "simular. Se toman muchas muestras de ese tama\u00f1o, se ",
+            "calcula la media de cada una, y se grafica c\u00f3mo se ",
+            "distribuyen esas medias \u2014 igual que hicimos con los ",
+            "vampiros, pero ac\u00e1 vos elegís los par\u00e1metros."
           ),
           layout_columns(
             col_widths = breakpoints(sm = c(12, 12), lg = c(4, 8)),
@@ -357,18 +325,12 @@ mod_error_estandar_ui <- function(id) {
             card(
               card_header(bs_icon("sliders", class = "me-1"), "Par\u00e1metros"),
               card_body(
-                radioButtons(
-                  ns("forma_pob_sim_ee"), "Forma de la poblaci\u00f3n:",
-                  choices  = c("Normal", "Uniforme", "Exponencial (sesgada)" = "Exponencial"),
-                  selected = "Normal"
-                ),
-                sliderInput(ns("N_sim_ee"), "Tama\u00f1o de la poblaci\u00f3n (N):",
-                            min = 20, max = 1000, value = 200, step = 10),
-                uiOutput(ns("slider_n_muestra_sim_ee")),
+                sliderInput(ns("n_muestra_sim_ee"), "Tama\u00f1o de cada muestra (n):",
+                            min = 2, max = 200, value = 10, step = 1),
                 sliderInput(ns("reps_sim_ee"),
                             "N\u00famero de muestras simuladas:",
                             min = 100, max = 5000, value = 1000, step = 100),
-                actionButton(ns("regenerar_sim_ee"), "Nueva poblaci\u00f3n",
+                actionButton(ns("regenerar_sim_ee"), "Nueva simulaci\u00f3n",
                              class = "btn-outline-secondary w-100 btn-sm",
                              icon  = icon("shuffle"))
               )
@@ -489,10 +451,10 @@ mod_error_estandar_ui <- function(id) {
         card_body(
           p(class = "small text-muted mb-3",
             "Elige una variable num\u00e9rica. Se compara el EE calculado por ",
-            strong("f\u00f3rmula cl\u00e1sica"), " (s/\u221an, sobre tus datos ",
+            strong("f\u00f3rmula cl\u00e1sica"), " (s/\u221aN, sobre tus datos ",
             "reales) contra el EE estimado por ", strong("bootstrap"),
-            " (remuestreando tus propios datos miles de veces, sin usar ",
-            "ninguna f\u00f3rmula) \u2014 deber\u00edan coincidir de cerca."
+            " (remuestreando tu dataset completo, con reemplazo, miles de ",
+            "veces, sin usar ninguna f\u00f3rmula) \u2014 deber\u00edan coincidir de cerca."
           ),
           layout_columns(
             col_widths = breakpoints(sm = c(12, 12), lg = c(4, 8)),
@@ -501,7 +463,6 @@ mod_error_estandar_ui <- function(id) {
               card_header(bs_icon("sliders", class = "me-1"), "Par\u00e1metros"),
               card_body(
                 uiOutput(ns("sel_var_ee")),
-                uiOutput(ns("sel_n_boot_ee")),
                 sliderInput(ns("reps_boot_ee"),
                             "N\u00famero de remuestreos bootstrap:",
                             min = 100, max = 5000, value = 1000, step = 100),
@@ -544,60 +505,176 @@ mod_error_estandar_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-        # ── ¿Qué es? — curva DE constante vs EE decreciente ──
-    output$plot_de_vs_n <- renderPlot({
-      n     <- 1:50
-      sigma <- 15
-      ee    <- sigma / sqrt(n)
-      df <- data.frame(
-        n     = rep(n, 2),
-        valor = c(rep(sigma, length(n)), ee),
-        tipo  = rep(c("DE (constante)", "EE (disminuye)"), each = length(n))
-      )
-      ggplot(df, aes(x = n, y = valor, color = tipo)) +
-        geom_line(linewidth = 1.2) +
-        scale_color_manual(values = c(colores$primario, colores$acento),
-                          name = NULL) +
-        labs(x = "Tama\u00f1o de muestra (n)", y = NULL) +
-        theme_light(base_size = 15) +
-        theme(legend.position = "top",
-              plot.background = element_rect(fill = colores$fondo, color = NA))
-    }, width = 480, height = 220, res = 96)
-
     # ── ¿Qué es? — histograma comparativo DE vs EE ────
     # Recrea la idea cl\u00e1sica de "histograma de datos" vs.
     # "histograma de medias muestrales": la comparaci\u00f3n visual
     # m\u00e1s directa para explicar DE vs EE sin f\u00f3rmulas.
-    output$plot_de_vs_ee_ind <- renderPlot({
+    individuos_ee <- reactive({
       set.seed(123)
-      poblacion  <- stats::rnorm(5000, mean = 35, sd = 5)
-      individuos <- sample(poblacion, 30)
-      df <- data.frame(x = individuos)
-      ggplot(df, aes(x = x)) +
-        geom_histogram(bins = 12, fill = colores$primario, color = "white",
-                       alpha = 0.9) +
-        labs(x = "Peso (g)", y = "Frecuencia",
-             title = "Pesos individuales (30 vampiros)") +
+      poblacion <- stats::rnorm(5000, mean = 35, sd = 5)
+      set.seed(1)
+      sample(poblacion, 30)
+    })
+
+    # Eje X COMPARTIDO entre los dos gr\u00e1ficos (basado en el rango de
+    # los datos individuales, que es el m\u00e1s ancho de los dos) \u2014 as\u00ed
+    # la diferencia de dispersi\u00f3n se ve a simple vista, sin tener que
+    # comparar los n\u00fameros de cada eje.
+    xlim_compartido_ee <- reactive({
+      rango  <- range(individuos_ee())
+      margen <- diff(rango) * 0.06
+      rango + c(-margen, margen)
+    })
+
+    output$plot_de_vs_ee_ind <- renderPlot({
+      individuos <- individuos_ee()
+      media_ind  <- mean(individuos)
+      de_ind     <- stats::sd(individuos)
+      xlim       <- xlim_compartido_ee()
+
+      # Mismo esquema de apilado por puntos que el gr\u00e1fico de la
+      # derecha, para que ambos se lean con el mismo lenguaje visual.
+      n_bins    <- 12
+      bin_ancho <- diff(xlim) / n_bins
+      bin_idx   <- floor((individuos - xlim[1]) / bin_ancho)
+      bin_idx   <- pmin(bin_idx, n_bins - 1)
+      x_columna <- xlim[1] + (bin_idx + 0.5) * bin_ancho
+      y_stack   <- ave(seq_along(individuos), bin_idx, FUN = seq_along)
+      df <- data.frame(x = x_columna, y = y_stack)
+
+      ggplot(df, aes(x = x, y = y)) +
+        geom_point(size = 3.6, shape = 21, fill = colores$primario,
+                  color = "white", stroke = 0.7, alpha = 0.95) +
+        geom_vline(xintercept = media_ind, color = colores$peligro,
+                  linewidth = 1, linetype = "dashed") +
+        annotate("text", x = media_ind, y = Inf,
+                 label = "Media", vjust = 2,
+                 color = colores$peligro, fontface = "bold", size = 4.3) +
+        coord_cartesian(xlim = xlim, ylim = c(0, max(y_stack) * 1.18)) +
+        scale_y_continuous(breaks = NULL) +
+        labs(x = "Peso (g)", y = NULL,
+             title = "30 vampiros, uno por uno",
+             subtitle = paste0("Media = ", round(media_ind, 2),
+                              " g   \u00b7   Desv. est\u00e1ndar = ",
+                              round(de_ind, 2), " g")) +
         theme_light(base_size = 17) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$primario,
-                                        face = "bold", size = 16))
+                                        face = "bold", size = 16),
+              plot.subtitle = element_text(color = colores$texto, size = 12),
+              axis.ticks.y = element_blank())
+    })
+
+    # ── Animaci\u00f3n: construcci\u00f3n en vivo de la distribuci\u00f3n muestral ──
+    # Precalcula las 300 medias una sola vez; la animaci\u00f3n solo
+    # revela progresivamente cu\u00e1ntas de esas 300 se muestran.
+    medias_completas_ee <- reactive({
+      set.seed(123)
+      poblacion <- stats::rnorm(5000, mean = 35, sd = 5)
+      set.seed(2)
+      replicate(300, mean(sample(poblacion, 30)))
+    })
+
+    # L\u00edmites fijos y esquema de "bins" para apilar puntos. Usa el
+    # MISMO xlim que el gr\u00e1fico de la izquierda (no el rango propio
+    # de las medias) para que la comparaci\u00f3n de ancho sea visual y
+    # directa \u2014 y adem\u00e1s no salte mientras se van agregando puntos.
+    limites_anim_ee <- reactive({
+      m      <- medias_completas_ee()
+      n_bins <- 36
+      xlim   <- xlim_compartido_ee()
+      bin_ancho <- diff(xlim) / n_bins
+      bin_idx   <- floor((m - xlim[1]) / bin_ancho)
+      bin_idx   <- pmin(bin_idx, n_bins - 1)
+      alto_max  <- max(table(bin_idx))
+      list(xlim = xlim, bin_ancho = bin_ancho, n_bins = n_bins,
+           ymax = alto_max * 1.18)
+    })
+
+    n_mostradas_ee <- reactiveVal(1)
+    animando_ee    <- reactiveVal(FALSE)
+
+    observeEvent(input$construir_anim_ee, {
+      if (n_mostradas_ee() >= 300) n_mostradas_ee(1)
+      animando_ee(TRUE)
+    })
+
+    observeEvent(input$reiniciar_anim_ee, {
+      animando_ee(FALSE)
+      n_mostradas_ee(1)
+    })
+
+    observe({
+      req(animando_ee())
+      invalidateLater(35)
+      isolate({
+        actual <- n_mostradas_ee()
+        if (actual >= 300) {
+          animando_ee(FALSE)
+        } else {
+          n_mostradas_ee(min(300, actual + 4))
+        }
+      })
+    })
+
+    output$contador_anim_ee <- renderUI({
+      n <- n_mostradas_ee()
+      if (n >= 300) {
+        tagList(bs_icon("check-circle-fill",
+                        style = paste0("color:", colores$exito), class = "me-1"),
+                "300 de 300 muestras")
+      } else {
+        paste0("Muestra ", n, " de 300")
+      }
     })
 
     output$plot_de_vs_ee_medias <- renderPlot({
-      set.seed(123)
-      poblacion <- stats::rnorm(5000, mean = 35, sd = 5)
-      medias    <- replicate(300, mean(sample(poblacion, 10)))
-      df <- data.frame(x = medias)
-      ggplot(df, aes(x = x)) +
-        geom_histogram(bins = 12, fill = colores$acento, color = "white",
-                       alpha = 0.9) +
-        labs(x = "Peso (g)", y = "Frecuencia",
-             title = "Medias de 300 muestras (n=10 c/u)") +
+      medias_todas <- medias_completas_ee()
+      lims         <- limites_anim_ee()
+      n_mostrar    <- n_mostradas_ee()
+      medias       <- medias_todas[seq_len(n_mostrar)]
+      media_actual <- mean(medias)
+      etiqueta     <- if (n_mostrar >= 300) "Gran media" else "Media hasta ahora"
+
+      # Cada punto se apila sobre los anteriores que cayeron en su
+      # mismo "bin" \u2014 el orden de aparici\u00f3n es el orden de la
+      # animaci\u00f3n, as\u00ed que un punto nunca cambia de posici\u00f3n una
+      # vez que aparece (sin importar cu\u00e1ntos m\u00e1s se agreguen despu\u00e9s).
+      bin_idx   <- floor((medias - lims$xlim[1]) / lims$bin_ancho)
+      bin_idx   <- pmin(bin_idx, lims$n_bins - 1)
+      x_columna <- lims$xlim[1] + (bin_idx + 0.5) * lims$bin_ancho
+      y_stack   <- ave(seq_along(medias), bin_idx, FUN = seq_along)
+      df <- data.frame(x = x_columna, y = y_stack)
+
+      de_medias <- stats::sd(medias)
+      subt <- if (n_mostrar >= 300) {
+        paste0("Gran media = ", round(media_actual, 2),
+              " g   \u00b7   Desv. est\u00e1ndar de las medias (= EE) = ",
+              round(de_medias, 2), " g")
+      } else {
+        paste0("Cada punto = la media de UNA muestra de 30 vampiros \u2014 ",
+              n_mostrar, " de 300 mostradas")
+      }
+
+      ggplot(df, aes(x = x, y = y)) +
+        geom_point(size = 3, shape = 21, fill = colores$acento,
+                  color = "white", stroke = 0.7, alpha = 0.95) +
+        geom_vline(xintercept = media_actual, color = colores$peligro,
+                  linewidth = 1, linetype = "dashed") +
+        annotate("text", x = media_actual, y = Inf,
+                 label = etiqueta, vjust = 2,
+                 color = colores$peligro, fontface = "bold", size = 4.3) +
+        coord_cartesian(xlim = lims$xlim, ylim = c(0, lims$ymax)) +
+        scale_y_continuous(breaks = NULL) +
+        labs(x = "Peso (g)", y = NULL,
+             title = "300 medias muestrales, una por una",
+             subtitle = subt) +
         theme_light(base_size = 17) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$acento,
-                                        face = "bold", size = 16))
+                                        face = "bold", size = 16),
+              plot.subtitle = element_text(color = colores$texto, size = 12),
+              axis.ticks.y = element_blank())
     })
 
 
@@ -783,53 +860,41 @@ mod_error_estandar_server <- function(id) {
         "enumerarlas) \u2014 pero el principio es id\u00e9ntico."
       )
     })
-    poblacion_sim_ee <- reactive({
-      input$regenerar_sim_ee
-      forma <- input$forma_pob_sim_ee
-      N     <- input$N_sim_ee
-      req(forma, N)
-      switch(forma,
-        "Normal"      = stats::rnorm(N, mean = 50, sd = 15),
-        "Uniforme"    = stats::runif(N, min = 0, max = 100),
-        "Exponencial" = stats::rexp(N, rate = 1 / 20)
-      )
-    })
-
-    output$slider_n_muestra_sim_ee <- renderUI({
-      req(input$N_sim_ee)
-      max_n <- max(3, floor(input$N_sim_ee * 0.8))
-      sliderInput(ns("n_muestra_sim_ee"), "Tama\u00f1o de cada muestra (n):",
-                  min = 2, max = max_n, value = min(5, max_n), step = 1)
+    # Par\u00e1metros TEÓRICOS conocidos de cada forma de poblaci\u00f3n
+    # (no se estiman de una muestra: son la f\u00f3rmula exacta de cada
+    # distribuci\u00f3n). Evita tener que introducir la correcci\u00f3n por
+    # poblaci\u00f3n finita: se muestrea de una poblaci\u00f3n conceptualmente
+    # infinita, como en el ejemplo de los vampiros.
+    # (no se estiman de una muestra: son la f\u00f3rmula exacta de la
+    # distribuci\u00f3n Normal). Evita tener que introducir la correcci\u00f3n
+    # por poblaci\u00f3n finita: se muestrea de una poblaci\u00f3n
+    # conceptualmente infinita, como en el ejemplo de los vampiros.
+    parametros_pob_sim_ee <- reactive({
+      list(mu = 50, sigma = 15)
     })
 
     medias_muestrales_sim_ee <- reactive({
-      pob  <- poblacion_sim_ee()
+      input$regenerar_sim_ee
       n    <- input$n_muestra_sim_ee
       reps <- input$reps_sim_ee
-      req(pob, n, reps, n < length(pob))
-      # Muestreo SIN reemplazo — la población es finita y conocida,
-      # igual que en el ejemplo de la Isla Sola.
-      replicate(reps, mean(sample(pob, size = n, replace = FALSE)))
+      req(n, reps)
+      replicate(reps, mean(stats::rnorm(n, mean = 50, sd = 15)))
     })
 
     output$cards_sim_ee <- renderUI({
-      pob    <- poblacion_sim_ee()
-      medias <- medias_muestrales_sim_ee()
-      n      <- input$n_muestra_sim_ee
-      N      <- length(pob)
-      sigma  <- stats::sd(pob)
-      se_sin <- sigma / sqrt(n)
-      se_con <- se_poblacion_finita(sigma, n, N)
-      se_obs <- stats::sd(medias)
+      medias     <- medias_muestrales_sim_ee()
+      param      <- parametros_pob_sim_ee()
+      n          <- input$n_muestra_sim_ee
+      gran_media <- mean(medias)
+      se_teorico <- param$sigma / sqrt(n)
+      se_obs     <- stats::sd(medias)
       tagList(
-        tarjeta_metrica("Media poblacional (\u03bc)", round(mean(pob), 2),
+        tarjeta_metrica("Media poblacional (\u03bc)", round(param$mu, 2),
                         "media"),
-        tarjeta_metrica("Desviaci\u00f3n est\u00e1ndar poblacional (\u03c3)",
-                        round(sigma, 2), "sd"),
-        tarjeta_metrica("EE sin correcci\u00f3n (\u03c3/\u221an)",
-                        round(se_sin, 2), "se_teorico"),
-        tarjeta_metrica("EE con correcci\u00f3n de poblaci\u00f3n finita",
-                        round(se_con, 2), "se_teorico"),
+        tarjeta_metrica("Gran media (promedio de tus muestras)",
+                        round(gran_media, 2), "gran_media"),
+        tarjeta_metrica("EE esperado por f\u00f3rmula (\u03c3/\u221an)",
+                        round(se_teorico, 2), "se_teorico"),
         tarjeta_metrica("EE observado (en esta simulaci\u00f3n)",
                         round(se_obs, 2), "se_observado", ultima = TRUE)
       )
@@ -837,7 +902,7 @@ mod_error_estandar_server <- function(id) {
 
     output$plot_sim_ee <- renderPlot({
       medias <- medias_muestrales_sim_ee()
-      pob    <- poblacion_sim_ee()
+      param  <- parametros_pob_sim_ee()
       req(length(medias) > 1)
       df <- data.frame(x = medias)
       ggplot(df, aes(x = x)) +
@@ -845,15 +910,19 @@ mod_error_estandar_server <- function(id) {
                        fill = colores$secundario, color = "white",
                        alpha = 0.85) +
         geom_density(color = colores$primario, linewidth = 0.9) +
-        geom_vline(xintercept = mean(pob), color = colores$peligro,
+        geom_vline(xintercept = param$mu, color = colores$peligro,
                   linewidth = 1, linetype = "dashed") +
-        annotate("text", x = mean(pob), y = Inf,
-                 label = "Media poblacional", vjust = 2,
+        annotate("text", x = param$mu, y = Inf,
+                 label = "Media poblacional (\u03bc)", vjust = 2,
                  color = colores$peligro, fontface = "bold", size = 4.3) +
+        geom_vline(xintercept = mean(medias), color = colores$primario,
+                  linewidth = 1, linetype = "dotted") +
+        annotate("text", x = mean(medias), y = Inf,
+                 label = "Gran media", vjust = 4,
+                 color = colores$primario, fontface = "bold", size = 4.3) +
         labs(x = "Media de cada muestra", y = "Densidad",
              title = paste0("Distribuci\u00f3n muestral de la media (n = ",
-                           input$n_muestra_sim_ee, ", N = ",
-                           length(pob), ")")) +
+                           input$n_muestra_sim_ee, ")")) +
         theme_light(base_size = 17) +
         theme(plot.background = element_rect(fill = colores$fondo, color = NA),
               plot.title = element_text(color = colores$primario,
@@ -861,28 +930,23 @@ mod_error_estandar_server <- function(id) {
     })
 
     output$insight_sim_ee <- renderUI({
-      n <- input$n_muestra_sim_ee
-      N <- input$N_sim_ee
-      req(n, N)
-      frac <- n / N
+      medias     <- medias_muestrales_sim_ee()
+      param      <- parametros_pob_sim_ee()
+      n          <- input$n_muestra_sim_ee
+      reps       <- input$reps_sim_ee
+      gran_media <- mean(medias)
+      se_teorico <- param$sigma / sqrt(n)
+      se_obs     <- stats::sd(medias)
       div(class = "alert alert-info small mt-2",
           bs_icon("lightbulb-fill", class = "me-1"),
-          if (frac < 0.05) {
-            paste0("Est\u00e1s muestreando solo el ", round(frac * 100, 1),
-                  "% de la poblaci\u00f3n (n = ", n, " de N = ", N, ") \u2014 ",
-                  "la correcci\u00f3n para poblaciones finitas casi no cambia ",
-                  "el EE; compara las dos tarjetas, son casi id\u00e9nticas. ",
-                  "Como en la Isla Sola: si tu muestra es una fracci\u00f3n ",
-                  "min\u00fascula de la poblaci\u00f3n, la f\u00f3rmula simple ",
-                  "\u03c3/\u221an es suficiente.")
-          } else {
-            paste0("Est\u00e1s muestreando el ", round(frac * 100, 1),
-                  "% de la poblaci\u00f3n (n = ", n, " de N = ", N, ") \u2014 ",
-                  "nota c\u00f3mo el EE con correcci\u00f3n de poblaci\u00f3n ",
-                  "finita es menor: si ya mediste una fracci\u00f3n ",
-                  "considerable de la poblaci\u00f3n, tienes menos ",
-                  "incertidumbre de la que la f\u00f3rmula simple sugiere.")
-          }
+          paste0("La gran media (", round(gran_media, 2), ") ya se ",
+                "parece bastante a la verdadera media poblacional (",
+                round(param$mu, 2), "), y el EE observado (",
+                round(se_obs, 2), ") se acerca al esperado por f\u00f3rmula (",
+                round(se_teorico, 2), "). Suben m\u00e1s el n\u00famero de ",
+                "muestras simuladas y vas a ver c\u00f3mo ambos pares se ",
+                "acercan todav\u00eda m\u00e1s \u2014 eso es la ley de los grandes ",
+                "n\u00fameros en acci\u00f3n.")
       )
     })
 
@@ -1101,21 +1165,14 @@ mod_error_estandar_server <- function(id) {
       x[!is.na(x)]
     })
 
-    output$sel_n_boot_ee <- renderUI({
-      req(valores_ee())
-      n_total <- length(valores_ee())
-      sliderInput(ns("n_boot_ee"), "Tama\u00f1o de cada remuestreo (n):",
-                  min = 2, max = n_total,
-                  value = min(30, n_total), step = 1)
-    })
-
     resultado_practica_ee <- eventReactive(input$calcular_ee, {
       x    <- valores_ee()
-      n    <- input$n_boot_ee
+      n    <- length(x)
       reps <- input$reps_boot_ee
       req(x, n, reps)
       list(
         media_muestra = mean(x),
+        sd_muestra    = stats::sd(x),
         se_formula    = se_formula(x, n),
         medias_boot   = bootstrap_medias(x, n, reps),
         n             = n
@@ -1129,7 +1186,9 @@ mod_error_estandar_server <- function(id) {
       tagList(
         tarjeta_metrica("Media de la variable", round(r$media_muestra, 2),
                         "media"),
-        tarjeta_metrica("Error est\u00e1ndar (f\u00f3rmula: s/\u221an)",
+        tarjeta_metrica("Desviaci\u00f3n est\u00e1ndar de la muestra (s)",
+                        round(r$sd_muestra, 2), "sd"),
+        tarjeta_metrica("Error est\u00e1ndar (f\u00f3rmula: s/\u221aN)",
                         round(r$se_formula, 2), "se_formula"),
         tarjeta_metrica("Error est\u00e1ndar (bootstrap)", round(se_boot, 2),
                         "se_bootstrap", ultima = TRUE)
@@ -1166,7 +1225,8 @@ mod_error_estandar_server <- function(id) {
         annotate("text", x = r$media_muestra + se_boot, y = Inf,
                  label = "\u00b1EE bootstrap", vjust = 6,
                  color = colores$peligro, fontface = "bold", size = 3) +
-        labs(x = paste0("Media de cada remuestreo (n = ", r$n, ")"),
+        labs(x = paste0("Media de cada remuestreo (N = ", r$n,
+                       ", tama\u00f1o real de tu muestra)"),
              y = "Densidad",
              title = "Distribuci\u00f3n bootstrap de la media") +
         theme_light(base_size = 17) +
@@ -1193,7 +1253,7 @@ mod_error_estandar_server <- function(id) {
 
     # ── Código R ──────────────────────────────────────
     output$codigo_r_ee <- renderText({
-      req(input$var_ee, input$n_boot_ee, input$reps_boot_ee)
+      req(input$var_ee, input$reps_boot_ee)
       fuente <- input$fuente_datos_ee
       es_propio <- !is.null(datos_propio_ee()) && !is.null(input$archivo_ee)
       nm_datos <- if (es_propio) "mis_datos" else fuente
@@ -1214,7 +1274,7 @@ mod_error_estandar_server <- function(id) {
         linea_carga, "\n\n",
         "x <- ", nm_datos, "$", input$var_ee, "\n",
         "x <- x[!is.na(x)]\n",
-        "n <- ", input$n_boot_ee, "\n\n",
+        "n <- length(x)  # tama\u00f1o real de tu muestra\n\n",
         "# EE por f\u00f3rmula cl\u00e1sica\n",
         "se_formula <- sd(x) / sqrt(n)\n\n",
         "# EE por bootstrap (remuestreo con reemplazo)\n",

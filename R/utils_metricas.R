@@ -14,6 +14,7 @@
 # métrica aparece en más de una pestaña o módulo.
 descripciones_metricas <- list(
   media     = "Promedio aritm\u00e9tico de los datos; sensible a valores extremos.",
+  gran_media = "El promedio de todas las medias muestrales que se simularon; a medida que sim\u00e1s m\u00e1s muestras, se acerca cada vez m\u00e1s a la verdadera media poblacional (\u03bc).",
   mediana   = "Valor central al ordenar los datos de menor a mayor; robusta a outliers.",
   moda      = "Valor (o valores) que m\u00e1s se repite(n) en los datos.",
   asimetria = "Qu\u00e9 tan sim\u00e9trica es la distribuci\u00f3n; 0 = sim\u00e9trica, (+) cola a la derecha, (\u2212) cola a la izquierda.",
@@ -24,6 +25,7 @@ descripciones_metricas <- list(
   cv        = "Desviaci\u00f3n est\u00e1ndar relativa a la media, en %; permite comparar dispersi\u00f3n entre variables de distinta escala.",
   error_estandar = "Cu\u00e1nto var\u00eda la media muestral de muestra en muestra; disminuye al aumentar el tama\u00f1o de muestra (\u221an).",
   se_teorico     = "EE = \u03c3/\u221an, usando la desviaci\u00f3n est\u00e1ndar POBLACIONAL real (conocida aqu\u00ed porque simulamos toda la poblaci\u00f3n) \u2014 lo que esperar\u00edas por f\u00f3rmula si conocieras \u03c3 con exactitud.",
+  se_teorico_fpc = "EE = (\u03c3/\u221an) \u00d7 \u221a((N\u2212n)/(N\u22121)), el factor de correcci\u00f3n por poblaci\u00f3n finita. Reduce el EE porque, al muestrear una fracci\u00f3n grande de una poblaci\u00f3n peque\u00f1a, hay menos incertidumbre que si la poblaci\u00f3n fuera infinita. Casi no cambia nada si n/N < 0.05.",
   se_observado   = "La desviaci\u00f3n est\u00e1ndar de las medias que realmente se obtuvieron al simular \u2014 lo que se observa en la pr\u00e1ctica. Se acerca al esperado por f\u00f3rmula, pero no es id\u00e9ntico por variabilidad de Monte Carlo.",
   se_formula     = "Estimado con EE = s/\u221an, usando la desviaci\u00f3n est\u00e1ndar de TU MUESTRA (s) como aproximaci\u00f3n de la poblacional \u2014 con datos reales nunca conoces \u03c3 con certeza.",
   se_bootstrap   = "Estimado remuestreando tus propios datos con reemplazo miles de veces y midiendo cu\u00e1nto var\u00edan esas medias \u2014 sin asumir ninguna f\u00f3rmula.",
@@ -49,13 +51,14 @@ tarjeta_metrica <- function(etiqueta, valor, clave, sufijo = "",
                              tipo = "info", ultima = FALSE) {
   descripcion <- descripciones_metricas[[clave]]
   div(
-    class = paste0("alert alert-", tipo, " small py-2 px-3 ",
+    class = paste0("alert alert-", tipo, " py-2 px-3 ",
                    if (ultima) "mb-0" else "mb-1"),
+    style = "font-size: 1rem;",
     strong(etiqueta, ": "), valor, sufijo,
     if (!is.null(descripcion)) {
       tagList(
         tags$br(),
-        tags$span(class = "text-muted", style = "font-size: 0.78rem;",
+        tags$span(class = "text-muted", style = "font-size: 0.88rem;",
                   descripcion)
       )
     }
